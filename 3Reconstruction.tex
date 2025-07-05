@@ -1,0 +1,133 @@
+% !TEX root = ~/Code/TN_LOWE_RECONSTRUCTION/main.tex
+\section{Signal Reconstruction Strategy\label{sec:RECONSTRUCTION}}
+% Delete the text and write your Method(s) here:
+%------------------------------------
+The calibration and characterisation of the \ac{CC} neutrino signal are based on the true information of the main electron of the interaction. If not otherwise mentioned, the plots in this section are produced from a MARLEY generated \ac{CC} neutrino sample without background. The first step of the reconstruction process is to cluster the hits of the TPC and PDS detector subsystems produced by the simulation's reco1 stage (see \cref{sec:EVENT_DEFINITION}). Next, we evaluate the detection efficiency and completeness of the col.--ind. matched TPC clusters (see \cref{sec:DETECTION_EFFICIENCY}). Subsequently, the event electron is corrected in charge for the drift time attenuation before computing a calibration factor that converts charge into deposited energy (see \cref{sec:ELECTRON_CALIBRATION}). The calibration factor is computed as a function of the threshold in the cluster's number of hits (nhits), serving as a proxy for the electron energy. Finally, the calibration factor is applied to all adjacent clusters of the event candidate and the total neutrino energy is computed with four different algorithms (see \cref{sec:NEUTRINO_CALIBRATION}). During the TPC calibration process, the drift coordinate is assumed from truth and the factors are extracted in absence of background. A discussion on how the intrinsic background contamination of the detector affects the signal reconstruction at these low energies is shown in~\cref{sec:SIGNAL_SMEARING} and the effects on drift coordinate resolution (as a result of TPC--PDS match) are presented in~\cref{sec:FLASH_MATCHING}.
+
+\subsection{Event Definition}\label{sec:EVENT_DEFINITION}
+Due to the lack of a higher--order reconstruction object in the standard low--energy workflow, DUNE's solar analysis starts with calibrating the clustered hits detected for the \ac{CC} interaction simulated by the MARLEY generator. Each cluster is a point--like object characterised by its charge (summed over the charge of the individual hits) and a 3D--reconstructed vertex $<t, y, z>$ (computed from the weighted average of the individual hits). These clusters are divided into primary (with charge bigger than any other's cluster charge up to \SI{1}{\meter} distance) or adjacent. We define a primary cluster together with its adjacent clusters and one possible associated flash as an event. Clustering algorithms have been developed (\href{https://github.com/DUNE/duneopdet/tree/develop/duneopdet/SolarNuUtils}{duneopdet} \& \href{https://github.com/DUNE/dunereco/tree/develop/dunereco/LowEUtils}{dunereco}) with associated producer modules (\href{https://github.com/DUNE/duneopdet/blob/develop/duneopdet/OpticalDetector/SolarOpFlash_module.cc}{SolarOpFlash\_module.cc} \& \href{https://github.com/DUNE/dunereco/blob/develop/dunereco/LowEUtils/SolarCluster_module.cc}{SolarCluster\_module.cc}) and included in the \href{https://github.com/DUNE/dunesw/blob/develop/fcl/dunefd/reco/solar_reco_dune10kt_1x2x6.fcl}{solar\_reco\_dune10kt\_1x2x6.fcl} \& \href{https://github.com/DUNE/dunesw/blob/develop/fcl/dunefdvd/reco/solar_reco_dunevd10kt_1x8x14_3view_30deg.fcl}{solar\_reco\_dunevd10kt\_1x8x14\_3view\_30deg.fcl} standard reconstruction workflows.
+
+\subsection{Detection Efficiency}\label{sec:DETECTION_EFFICIENCY}
+The first figure of merit to be extracted from the simulation is the detection efficiency (see~\cref{fig:DETECTION_EFFICIENCY} (left)). We observe a strong dependence on the number of hits. Only with a minimum hit condition of 2, the simulation reaches detection efficiency values of $\num{\sim 100}\%$. Achieving a reconstruction threshold ($\num{> 90}\%$ efficiency) above \SI{5.5}{\mega\electronvolt} requires a minimum hit condition of 1 hit. Instead of interpreting this efficiency in terms of the neutrino electron, using the information provided in~\cref{fig:NEUTRINO_ELECTRON_CORRELATION} (neutrino--electron energy offset \SI{> 4.5}{\mega\electronvolt}) one can deduce an electron detection threshold of \SI{\sim1}{\mega\electronvolt}. A better estimation of the detection threshold can be extracted from the energy resolution fit in~\cref{fig:RMS}.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_Reco_NHit_Efficiency.png}
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_Cluster_Completeness.png}
+    \caption{Efficiency plots for signal clustering parameters of 3 adjacent channels and 25 ticks. (left) Neutrino Detection Efficiency. (right) Main electron charge completeness in the primary cluster.\label{fig:DETECTION_EFFICIENCY}}
+\end{figure}
+
+The next parameter to evaluate is the completeness of the primary clusters, which is a measure of the electron charge--confinement given a certain clustering parameter set. For the purpose of the solar neutrino analysis of DUNE, clustering parameters of 3 adjacent channels and 25 ticks have been used to maximise completeness while ensuring cluster purity in the context of background. The most up--to--date values for this clustering should be found in the producer's \href{https://github.com/DUNE/dunereco/blob/develop/dunereco/LowEUtils/fcl/SolarCluster.fcl}{SolarCluster.fcl}. Despite the good overall completeness of the signal, we observe a trend with respect to the number of hits per cluster, which can be accounted for in the later described charged correction factor to improve reconstruction. The trend that one observes is clear and understandable; for depositions which result in a lower number of hits (this can happen because of low energy deposition or a perpendicular trajectory of the particle with respect to the TPC plane) it is more likely that clusters of similar sizes are formed (e.g. 2 clusters of 1 hit) resulting in a lower percentual charge in the primary cluster.
+
+\subsection{Electron Energy Calibration}\label{sec:ELECTRON_CALIBRATION}
+TPC hits are first grouped into spatial clusters using a dedicated clustering algorithm. Each event contains a \textbf{main cluster}, corresponding to the primary outgoing electron, and zero or more \textbf{adjacent clusters}, interpreted as gamma-induced ``blips''. The first step in calibration involves correcting the total ionization charge of each cluster for the electron--lifetime attenuation in the LAr (see~\cref{eq:ELECTRON_LIFETIME}).
+
+\begin{equation}
+    \dfrac{Q_\text{raw}(n_\text{hit})}{E^\text{truth}_e} = F_0(n_\text{hit}) \cdot \exp\left(\frac{t^\text{drift}}{\tau_e}\right),
+\end{equation}\label{eq:ELECTRON_LIFETIME}
+
+where \( Q_{\text{raw}} \) is the observed (uncorrected) cluster charge, \( E^\text{truth}_e \) is the true main electron energy of the interaction, \( F_0 \) is the charge--to--energy correction factor, \( t^\text{drift} \) is the true drift time of the electron, and \( \tau_e \) is the electron lifetime measured here independently and cross-checked against the simulation input.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Charge_Correction_2D_Scan.png}
+    \caption[width=1\linewidth]{Drift attenuation correction.\label{fig:CHARGE_CORRECTION}}
+\end{figure}
+
+Assuming the main cluster corresponds to a fully-contained electron, we take its known true energy (from simulation) as a reference and compute the charge--to--energy conversion factor for each $(n_\text{hit})$ threshold. Additionally, to asses the impact of this assumption, with the goal of characterising signal clusters in the context of background which limits the clustering parameters, one can also investigate a ``cheated charge''. This is computed for all clusters, adding the surrounding charge that has been backtracked to the main electron of the interaction. A calibration based on this cheated clustering gives us an understanding of the losses that arise from a limited clustering ability in the context of background.
+
+\begin{equation}
+    E_{\text{cluster}} = \alpha(n_{\text{hit}}, E_{\text{true}}) \cdot Q_{\text{corr}}.
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_Charge_Corrected_2D_Scan.png}
+    \caption[width=1\linewidth]{Charge factor correction.\label{fig:CHARGE_CORRECTED}}
+\end{figure}
+
+After the truth drift correction has been applied to the data, the charge correction factor is immediately obtained.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Charge_Correction_Factor.png}
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_ElectronCharge_Correction_Factor.png}
+    \caption{Per hit correction factor distributions. (left) Primary cluster charge. (right) Cheated electron cluster charge.\label{fig:CHARGE_CORRECTION_FACTOR}}
+\end{figure}
+
+Even after lifetime and charge calibration, small systematic biases may remain in the reconstructed electron energy due to recombination modelling, imperfect response, or clustering inefficiencies. We apply a linear correction to account for this residual offset:
+
+\begin{equation}
+    E_{e}^{\text{final}} = a \cdot E_{\text{cluster}} + b,
+\end{equation}
+
+where \( a \) and \( b \) are derived from fits to the simulated \( E_{\text{true}} \) versus \( E_{\text{reco}} \) distributions.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_marley_signal_Cheated_Energy_Resolution_NHits3.png}
+    \caption[width=1\linewidth]{Energy resolution from calibrated charge with cheated clustering.\label{fig:RMS}}
+\end{figure}
+
+Applying this calibration to the main electron cluster, we obtain the final calibrated energy of the main electron. For all the adjacent clusters, we simply apply the charge correction factor obtained from the main electron cluster, assuming that these clusters are gamma-induced ``blips'' and therefore have a similar response to the main electron. \cref{fig:SIGNAL_DAUGHTER_SMEARING} shows the smearing matrices of the main electron and gamma energies after the calibration. Additionally, the smearing matrix of the visible energy (defined as the sum of the main electron and gamma energy) is shown.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_True&Reco_Daughter_Energy.png}
+    \caption[width=1\linewidth]{Signal daughter smearing obtained after main electron calibration.\label{fig:SIGNAL_DAUGHTER_SMEARING}}
+\end{figure}
+
+\subsection{Neutrino Energy Calibration}\label{sec:NEUTRINO_CALIBRATION}
+The next step in the signal reconstruction is to calibrate the neutrino energy. The main electron energy is corrected for the drift time attenuation and the charge calibration factor, as described in \cref{sec:ELECTRON_CALIBRATION}. The main electron energy is then used to compute the total neutrino energy, which is computed from the main electron energy and the energies of all adjacent clusters (up to \SI{1}{\meter}). The adjacent clusters are assumed to be gamma-induced ``blips'' and are calibrated using the same charge calibration factor as the main electron. The total neutrino energy is computed as:
+
+\begin{equation}
+    E_{\nu}^{\text{raw}} = E_{e}^{\text{final}} + \sum_i E_{\gamma,i}^{\text{final}}.
+\end{equation}
+
+This strategy is the first and most obvious approach for neutrino energy reconstruction. However, it does not account for the energy smearing of the signal, and the presence of background can significantly affect the reconstructed neutrino energy. Therefore, we study alternative methods to improve the energy resolution and mitigate the effects of background contamination.
+
+
+
+\subsection{Signal Smearing\label{sec:SIGNAL_SMEARING}}
+Due to the missing nuclear binding energy and undetected soft particles, the reconstructed neutrino energy is expected to systematically underestimate the true value. A final global correction is applied to bring the distribution into agreement with the simulation truth:
+
+\begin{equation}
+    E_{\nu}^{\text{cal}} = a' \cdot E_{\nu}^{\text{raw}} + b',
+\end{equation}
+
+with \( a' \) and \( b' \) obtained from a linear fit to the true versus reconstructed neutrino energy spectrum in Monte Carlo.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Reco_Neutrino_Energy_Norm_Hist2D_Fit.png}
+    \caption[width=1\linewidth]{Neutrino energy smearing from the calibrated signal.\label{fig:NEUTRINO_ENERGY_SMEARING}}
+\end{figure}
+
+\subsection{Flash Matching\label{sec:FLASH_MATCHING}}
+% Describe the flash matching strategy here:
+The final step in the signal reconstruction process is to match the reconstructed TPC clusters with the PDS flashes. The matching is performed by evaluating the distance between the TPC vertex and the PDS flash position, as well as the time difference between the TPC cluster and the PDS flash. The matching efficiency is defined as the fraction of TPC clusters that have a corresponding pure PDS flash. \cref{fig:FLASH_MATCHING} shows the flash--matching efficiency as a function of the distance to the PDS plane and the neutrino energy. The matching efficiency is high for distances up to \SI{1}{\meter} and decreases for larger distances. The matching efficiency is also higher for higher neutrino energies. This is expected, as the PDS flashes are more likely to be detected for higher energy depositions.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_MatchedOpFlashEfficiency_Scan.png}
+    \caption[width=1\linewidth]{Flash--matching efficiency. (left) As a function of distance to the PDS plane. (right) As a function of neutrino energy.\label{fig:FLASH_MATCHING}}
+\end{figure}
+
+For any given TPC cluster, the matching strategy follows these steps:
+
+\begin{enumerate}
+    \item\textbf{Distance Calculation}: Compute the distance between the TPC cluster vertex and all PDS flash positions.
+    \item\textbf{Time Difference Calculation}: Calculate the time difference between the TPC cluster and the PDS flash. This must be smaller than the drift time of the electrons in the LAr.
+    % c++ condition if (pow(MVecRecY[i] - OpFlashY[j], 2) / pow(fAdjOpFlashY, 2) + pow(MVecRecZ[i] - OpFlashZ[j], 2) / pow(fAdjOpFlashZ, 2) > 1)
+    \item\textbf{Candidate Selection Criteria}: A PDS flash is considered adjacent to a TPC flash if the distance $(\text{TPC}_\text{A} - \text{PDS}_\text{A})^2 / \text{AdjOpFlash}_\text{A}^2 + (\text{TPC}_\text{B} - \text{PDS}_\text{B})^2 / \text{AdjOpFlash}_\text{B}$ is smaller than 1, where \( \text{AdjOpFlash}_\text{A} \) and \( \text{AdjOpFlash}_\text{B} \) are the adjusted matching distances in the 2 projected coordinate, respectively.
+    \item\textbf{Matching Criteria}: The algorithm consider 3 additional cuts to prevent the radom matching of background cluster:
+    \begin{itemize}
+        \item The minimum number of hits in the PDS flash: AdjOpFlashMinNHitCut (by default 3).
+        \item The minimum number of PEs in the PDS flash: AdjOpFlashMinPECut (by default 20).
+        \item The maximum ratio of AdjOpFlashMaxPE / AdjOpFlashPE: AdjOpFlashMaxPERatioCut (by default 1). This is intended to prevent the matching of background PDS flashes, wich are less homogeneous in the number of PEs compared to the signal PDS flashes.
+    \end{itemize}
+\end{enumerate}
+
+Select the PDS flash with the highest number of PE as the matching candidate.  for the TPC cluster. If no PDS flash is found within the matching criteria, the TPC cluster is considered unmatched.
+
+From this matching one can reconstruct the drift coordinate of the TPC cluster, which is essential for the correct reconstruction of the neutrino energy. The drift coordinate is computed from the time between the TPC vertex and the PDS flash by taking into account the drift velocity of the electrons in the LAr.

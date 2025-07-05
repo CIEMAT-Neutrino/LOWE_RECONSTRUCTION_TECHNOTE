@@ -1,0 +1,45 @@
+% !TEX root = ~/Code/TN_LOWE_RECONSTRUCTION/main.tex
+\section{Results\label{sec:RESULTS}}
+From the TPC cluster vertex reconstruction and the flash--matching, we can extract the energy and vertex resolution. The calibrated neutrino energy is obtained from a standalone code \href{https://github.com/CIEMAT-Neutrino/SOLAR}{SOLAR} package, which formats the simulation output into numpy arrays and performs the successive operations presented in \cref{sec:RECONSTRUCTION}. Here we present the main figures of merit and compare the resolution performance between the two geometries, the \textit{hd\_1x2x6\_centralAPA} and the \textit{vd\_1x8x14\_3view\_30deg} and additional background reduced scenarios.
+
+\subsection{Energy Resolution}\label{sec:ENERGY_RESOLUTION}
+The energy resolution is defined as the ratio of the standard deviation of the reconstructed neutrino energy to the mean value of the neutrino energy. The energy resolution is calculated from the calibrated neutrino energies. The results are shown in \cref{fig:SIGNAL_RMS}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Calibration_RMS.png}
+    \caption[width=1\linewidth]{Energy resolution from calibrated neutrino energies with different reconstruction algorithms.\label{fig:SIGNAL_RMS}}
+\end{figure}
+
+\subsection{Vertex Resolution}\label{sec:VERTEX_RESOLUTION}
+The vertex resolution is defined from the distance between the reconstructed vertex and the true vertex position. The vertex resolution is calculated from the calibrated signal, which is obtained from the TPC cluster vertex reconstruction. The results are shown in \cref{fig:SIGNAL_VERTEX_RESOLUTION}.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_signal_Vertex_Error.png}
+    \caption[width=1\linewidth]{Vertex resolution from calibrated signal.\label{fig:SIGNAL_VERTEX_RESOLUTION}}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_signal_Smearing_Matrix_Hist2D.png}
+    \caption[width=1\linewidth]{Vertex smearing from calibrated signal.\label{fig:SIGNAL_VERTEX_SMEARING}}
+\end{figure}
+
+\subsection{Geometry Comparison\label{sec:GEOMETRY_COMPARISON}}
+So far we have used as reference the \textit{hd\_1x2x6\_centralAPA} geometry, corresponds to the inner drift volumes of the HD detector. In this section, we compare the results with the \textit{vd\_1x8x14\_3view\_30deg} geometry as well as different background scenarios (nominal, optimistic and shielded), which are described in \cref{sec:GEOMETRY}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/Neutrino_TotalEnergy_Resolution_vs_NHit_Threshold.png}
+    \caption[width=1\linewidth]{Energy resolution comparison.\label{fig:TOTALENERGY_RESOLUTION_COMPARISON}}
+\end{figure}
+
+Applying the TotalEnergy reco algoritm, we can see that the energy resolution is better in the \textit{hd\_1x2x6\_centralAPA} geometry, which is expected since it has a lower background rate and smaller drift volume causing therefore less diffusion. The energy resolution is shown in \cref{fig:TOTALENERGY_RESOLUTION_COMPARISON}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/Neutrino_SolarEnergy_Resolution_vs_NHit_Threshold.png}
+    \caption[width=1\linewidth]{Energy resolution comparison.\label{fig:SOLARENERGY_RESOLUTION_COMPARISON}}
+\end{figure}
+
+Applying the SolarEnergy reco algorithm we can mitigate this difference in favour of the \textit{vd\_1x8x14\_3view\_30deg} geometry, which has a lower TPC threshold and is able to pich up more resilution on the primary cluster. The energy resolution is shown in \cref{fig:SOLARENERGY_RESOLUTION_COMPARISON}.

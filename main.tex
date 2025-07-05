@@ -1,0 +1,62 @@
+% !TEX root = ~/Code/TN_LOWE_RECONSTRUCTION/main.tex
+\documentclass[a4paper]{article}  % Default LaTeX article class
+\usepackage[a4paper, margin=1in]{geometry} % Set page size and margins
+\usepackage[english]{babel}       % Add babel package for language support
+\usepackage[numbers]{natbib}      % For bibliography management
+\usepackage{bookmark}             % For better handling of outlines
+\usepackage{csquotes}             % For context-sensitive quotation marks
+\usepackage{graphicx}             % For including images
+\usepackage{amsmath}              % For advanced math typesetting
+\usepackage{amsfonts}             % For additional math fonts
+\usepackage{amssymb}              % For additional math symbols
+\usepackage{hyperref}             % For hyperlinks in the document
+\usepackage{geometry}             % For setting page dimensions
+\usepackage{siunitx}
+\usepackage{cleveref}
+\usepackage{subcaption}
+\usepackage[nohyperlinks,printonlyused]{acronym}
+
+\begin{document}
+\selectlanguage{english}          % Sets the language of the document.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{0Frontmatter}
+\input{1Introduction}
+\input{2Simulation}
+\input{3Reconstruction}
+\input{4Results}
+\input{5Conclusion}
+\clearpage                    % Sometimes you want the rest on separate pages.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Bibliography
+%--------------------
+\bibliographystyle{ieeetr}  % Use IEEEtran bibliography style
+\bibliography{bibliography} % Use natbib command
+\clearpage                  % Sometimes it is useful to have bibliography on separate page.
+
+% Acronyms
+%--------------------
+\section*{List of Acronyms}
+\begin{acronym}
+    \acro{APA}{Anode Plane Assembly}
+    \acro{CC}{Charged Current}
+    \acro{DUNE}{Deep Underground Neutrino Experiment}
+    \acro{FD}{Far Detector}
+    \acro{HD}{Horizontal--Drift}
+    \acro{LAr}{Liquid Argon}
+    \acro{LArTPC}{Liquid Argon Time Projection Chamber}
+    \acro{PDS}{Photon Detection System}
+    \acro{SiPM}{Silicon Photomultiplier}
+    \acro{TPC}{Time Projection Chamber}
+    \acro{VD}{Vertical--Drift}
+\end{acronym}
+
+% Appendix
+%--------------------
+\clearpage                % Sometimes it is useful to have bibliography on separate page.
+\onecolumn                % If you want 1 column for appendix.
+% \input{Text/Appendix}     % Comment out to exclude appendix
+
+\end{document}
