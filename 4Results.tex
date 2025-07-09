@@ -1,31 +1,47 @@
 % !TEX root = ~/Code/TN_LOWE_RECONSTRUCTION/main.tex
 \section{Results\label{sec:RESULTS}}
-From the TPC cluster vertex reconstruction and the flash--matching, we can extract the energy and vertex resolution. The calibrated neutrino energy is obtained from a standalone code \href{https://github.com/CIEMAT-Neutrino/SOLAR}{SOLAR} package, which formats the simulation output into numpy arrays and performs the successive operations presented in \cref{sec:RECONSTRUCTION}. Here we present the main figures of merit and compare the resolution performance between the two geometries, the \textit{hd\_1x2x6\_centralAPA} and the \textit{vd\_1x8x14\_3view\_30deg} and additional background reduced scenarios.
+From the TPC cluster vertex reconstruction and the flash--matching, we can extract the energy and vertex resolution. The calibrated neutrino energy is obtained from a standalone code \href{https://github.com/CIEMAT-Neutrino/SOLAR}{SOLAR} package, which formats the simulation output into numpy arrays and performs the successive operations presented in~\cref{sec:RECONSTRUCTION}. Here we present the main figures of merit and compare the resolution performance between the two geometries, the hd\_1x2x6\_centralAPA and the vd\_1x8x14\_3view\_30deg and additional background reduced scenarios.
 
-\subsection{Energy Resolution}\label{sec:ENERGY_RESOLUTION}
-The energy resolution is defined as the ratio of the standard deviation of the reconstructed neutrino energy to the mean value of the neutrino energy. The energy resolution is calculated from the calibrated neutrino energies. The results are shown in \cref{fig:SIGNAL_RMS}.
+\subsection{Neutrino Energy Resolution}\label{sec:ENERGY_RESOLUTION}
+The energy resolution is defined as the ratio of the standard deviation of the reconstructed neutrino energy to the mean value of the neutrino energy. The energy resolution is calculated from the calibrated neutrino energies. The results are shown in~\cref{fig:SIGNAL_RMS}.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Calibration_RMS.png}
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_Calibration_RMS.png}
     \caption[width=1\linewidth]{Energy resolution from calibrated neutrino energies with different reconstruction algorithms.\label{fig:SIGNAL_RMS}}
 \end{figure}
 
-\subsection{Vertex Resolution}\label{sec:VERTEX_RESOLUTION}
-The vertex resolution is defined from the distance between the reconstructed vertex and the true vertex position. The vertex resolution is calculated from the calibrated signal, which is obtained from the TPC cluster vertex reconstruction. The results are shown in \cref{fig:SIGNAL_VERTEX_RESOLUTION}.
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_signal_Vertex_Error.png}
-    \caption[width=1\linewidth]{Vertex resolution from calibrated signal.\label{fig:SIGNAL_VERTEX_RESOLUTION}}
-\end{figure}
+\subsection{Neutrino Vertex Resolution}\label{sec:VERTEX_RESOLUTION}
+The vertex resolution is defined from the distance between the reconstructed vertex and the true vertex position.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_signal_Smearing_Matrix_Hist2D.png}
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_Smearing_Matrix_Hist2D.png}
     \caption[width=1\linewidth]{Vertex smearing from calibrated signal.\label{fig:SIGNAL_VERTEX_SMEARING}}
 \end{figure}
 
-\subsection{Geometry Comparison\label{sec:GEOMETRY_COMPARISON}}
+The vertex resolution is calculated from the calibrated signal, which is obtained from the TPC cluster vertex reconstruction. The results are shown in~\cref{fig:SIGNAL_VERTEX_RESOLUTION}. Notice how the z--axis of the x-coordinate heatmaps shows fewer counts than the rest. This is a result of the flash--matching inefficiencies.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_Vertex_Resolution.png}
+    \caption[width=1\linewidth]{Vertex resolution from calibrated signal.\label{fig:SIGNAL_VERTEX_RESOLUTION}}
+\end{figure}
+
+Form this computation we obtain a vertex resolution that is quite poor. As a figure of merit, the resolution computed in this way behaves correctly if the reconstructed values are normally distributed around the truth. This is not the case of the vertex reconstruction algorithms in a \ac{LArTPC} where failures in the TPC induction--collection plane or the flash--matching algorithms lead to arbitrary values. TO have a better understanding of the reconstruction potential, we can compute the cumulative vertex error~\cref{fig:SIGNAL_VERTEX_ERROR}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_Vertex_Error.png}
+    \caption[width=1\linewidth]{Cumulative vertex error from calibrated signal.\label{fig:SIGNAL_VERTEX_ERROR}}
+\end{figure}
+
+As a figure of merit to extract from this analysis, we can set a vertex error below threshold and evaluate the percentage of the sample that is reconstructed below that value. By doing so, we observe better results in the y-- and z--coordinates. This is expected since the x--coordinate is obtained from the flash--matching algorithm, which has a higher inefficiency than the TPC cluster vertex reconstruction.
+
+\subsection{Flash Matching Effect on Neutrino Resolution}\label{sec:FLASH_MATCHING_EFFECT}
+The flash matching is a crucial step in the reconstruction process, as it allows to associate the TPC clusters with the corresponding flashes and therefor obtain the correct drift coordinate.
+
+\subsection{DUNE Geometry Comparison\label{sec:GEOMETRY_COMPARISON}}
 So far we have used as reference the \textit{hd\_1x2x6\_centralAPA} geometry, corresponds to the inner drift volumes of the HD detector. In this section, we compare the results with the \textit{vd\_1x8x14\_3view\_30deg} geometry as well as different background scenarios (nominal, optimistic and shielded), which are described in \cref{sec:GEOMETRY}.
 
 \begin{figure}[ht]
@@ -34,7 +50,7 @@ So far we have used as reference the \textit{hd\_1x2x6\_centralAPA} geometry, co
     \caption[width=1\linewidth]{Energy resolution comparison.\label{fig:TOTALENERGY_RESOLUTION_COMPARISON}}
 \end{figure}
 
-Applying the TotalEnergy reco algoritm, we can see that the energy resolution is better in the \textit{hd\_1x2x6\_centralAPA} geometry, which is expected since it has a lower background rate and smaller drift volume causing therefore less diffusion. The energy resolution is shown in \cref{fig:TOTALENERGY_RESOLUTION_COMPARISON}.
+Applying the \textbf{TotalEnergy} reconstruction algorithm, we can see that the energy resolution is better in the hd\_1x2x6\_centralAPA geometry, which is expected since it has a lower background rate and smaller drift volume causing therefore less diffusion. The energy resolution is shown in~\cref{fig:TOTALENERGY_RESOLUTION_COMPARISON}.
 
 \begin{figure}[ht]
     \centering
@@ -42,4 +58,21 @@ Applying the TotalEnergy reco algoritm, we can see that the energy resolution is
     \caption[width=1\linewidth]{Energy resolution comparison.\label{fig:SOLARENERGY_RESOLUTION_COMPARISON}}
 \end{figure}
 
-Applying the SolarEnergy reco algorithm we can mitigate this difference in favour of the \textit{vd\_1x8x14\_3view\_30deg} geometry, which has a lower TPC threshold and is able to pich up more resilution on the primary cluster. The energy resolution is shown in \cref{fig:SOLARENERGY_RESOLUTION_COMPARISON}.
+Applying the \textbf{SolarEnergy} reconstruction algorithm we can mitigate this difference in flavour of the vd\_1x8x14\_3view\_30deg geometry, which has a lower TPC threshold and is able to pitch up more resolution on the primary cluster. The energy resolution is shown in \cref{fig:SOLARENERGY_RESOLUTION_COMPARISON}.
+
+In the case of the vertex resolution, we can use the previously defined figure of merit and quote the percent of events with a vertex error below a certain threshold. The results are shown in~\cref{tab:VERTEX_ERROR_COMPARISON}.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{cccc}
+        \hline
+        \textbf{Geometry} & \textbf{X (\SI{<7}{\centi\meter})} & \textbf{Y (\SI{<3}{\centi\meter})} & \textbf{Z (\SI{<3}{\centi\meter})}\\
+        \hline\hline
+        hd\_1x2x6\_centralAPA                & 74\% & 95\% & 87.5\%\\
+        hd\_1x2x6\_lateralAPA                & 69\% & 95\% & 87.5\%\\
+        vd\_1x8x14\_3view\_30deg             & 33\% & 92\% & 88\%\\
+        vd\_1x8x14\_3view\_30deg\_optimistic & & & \\
+        \hline
+    \end{tabular}
+    \caption[width=1\linewidth]{Vertex error comparison between geometries. Percentage of \SI{18}{\mega\electronvolt} sample below coordinate error.\label{tab:VERTEX_ERROR_COMPARISON}}
+\end{table}
