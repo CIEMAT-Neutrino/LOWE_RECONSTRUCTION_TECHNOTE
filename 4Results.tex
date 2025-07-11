@@ -3,13 +3,17 @@
 From the TPC cluster vertex reconstruction and the flash--matching, we can extract the energy and vertex resolution. The calibrated neutrino energy is obtained from a standalone code \href{https://github.com/CIEMAT-Neutrino/SOLAR}{SOLAR} package, which formats the simulation output into numpy arrays and performs the successive operations presented in~\cref{sec:RECONSTRUCTION}. Here we present the main figures of merit and compare the resolution performance between the two geometries, the hd\_1x2x6\_centralAPA and the vd\_1x8x14\_3view\_30deg and additional background reduced scenarios.
 
 \subsection{Neutrino Energy Resolution}\label{sec:ENERGY_RESOLUTION}
-The energy resolution is defined as the ratio of the standard deviation of the reconstructed neutrino energy to the mean value of the neutrino energy. The energy resolution is calculated from the calibrated neutrino energies. The results are shown in~\cref{fig:SIGNAL_RMS}.
+The energy resolution is defined as the ratio of the standard deviation of the reconstructed neutrino energy to the mean value of the neutrino energy. The energy resolution is calculated from the calibrated neutrino energies. The results are shown in~\cref{fig:SIGNAL_RMS} for the 4 different reconstruction algorithms.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_Calibration_RMS.png}
     \caption[width=1\linewidth]{Energy resolution from calibrated neutrino energies with different reconstruction algorithms.\label{fig:SIGNAL_RMS}}
 \end{figure}
+
+As expected, the \textbf{ClusterEnergy} algorithm has the worst energy resolution for neutrino energies below \SI{10}{\mega\electronvolt}, as it does not take into account the energy deposited by adjacent gamma blips which can amount to more than 50\% of the initial neutrino energy. The \textbf{SelectedEnergy} and \textbf{SolarEnergy} algorithms have the best resolution in this range. As the energy of the neutrino goes higher, the relative weight of the adjacent background clusters starts becoming less important. Over the range of \qtylist{10;20}{\mega\electronvolt} all algorithms perform almost identical and for the \qtylist{20;30}{\mega\electronvolt} neutrino energies, the \textbf{TotalEnergy} algorithm starts to outperform the others. Importantly, this trend is maintained for any hit threshold selected, ensuring that the energy resolution is robust against the clustering criteria.
+
+Overall, the \textbf{SolarEnergy} algorithm is the best choice for neutrino energies below \SI{20}{\mega\electronvolt}, as it has better (or compatible) energy resolution compared to the other algorithms. The benefit of this method that is not shown in this comparison is that it sets an upper limit to the reconstructed energies of background particles. If not constrained, cavern backgrounds such as neutrons or gammas can contribute significantly with fake events to physics analyses such as the solar neutrino oscillation studies. By only adding a maximum fixed amount of energy to the main clusters produced by these particles, one ensures that their contribution is limited to lower energies compared to the full scope of the solar neutrino spectrum. 
 
 \subsection{Neutrino Vertex Resolution}\label{sec:VERTEX_RESOLUTION}
 The vertex resolution is defined from the distance between the reconstructed vertex and the true vertex position.
@@ -36,10 +40,7 @@ Form this computation we obtain a vertex resolution that is quite poor. As a fig
     \caption[width=1\linewidth]{Cumulative vertex error from calibrated signal.\label{fig:SIGNAL_VERTEX_ERROR}}
 \end{figure}
 
-As a figure of merit to extract from this analysis, we can set a vertex error below threshold and evaluate the percentage of the sample that is reconstructed below that value. By doing so, we observe better results in the y-- and z--coordinates. This is expected since the x--coordinate is obtained from the flash--matching algorithm, which has a higher inefficiency than the TPC cluster vertex reconstruction.
-
-\subsection{Flash Matching Effect on Neutrino Resolution}\label{sec:FLASH_MATCHING_EFFECT}
-The flash matching is a crucial step in the reconstruction process, as it allows to associate the TPC clusters with the corresponding flashes and therefor obtain the correct drift coordinate.
+As a figure of merit to extract from this analysis, we can find the point that minimizes the second derivative of these curves. In terms of reconstruction this corresponds to the inflexed point between the events that have been correctly matched and the ones that have a pseudo--random reconstruction. By doing so we find the vertex tolerance, and we evaluate the percentage of the sample that is reconstructed within that value. By doing so, we observe better results in the y-- and z--coordinates. This is expected since the x--coordinate is obtained from the flash--matching algorithm, which has a higher inefficiency than the TPC cluster vertex reconstruction.
 
 \subsection{DUNE Geometry Comparison\label{sec:GEOMETRY_COMPARISON}}
 So far we have used as reference the \textit{hd\_1x2x6\_centralAPA} geometry, corresponds to the inner drift volumes of the HD detector. In this section, we compare the results with the \textit{vd\_1x8x14\_3view\_30deg} geometry as well as different background scenarios (nominal, optimistic and shielded), which are described in \cref{sec:GEOMETRY}.
@@ -65,14 +66,20 @@ In the case of the vertex resolution, we can use the previously defined figure o
 \begin{table}[ht]
     \centering
     \begin{tabular}{cccc}
+        & \multicolumn{3}{c}{Tolerance -- Sample Size Below Tolerance (\%)}\\
         \hline
-        \textbf{Geometry} & \textbf{X (\SI{<7}{\centi\meter})} & \textbf{Y (\SI{<3}{\centi\meter})} & \textbf{Z (\SI{<3}{\centi\meter})}\\
+        \textbf{Geometry} & \textbf{X} & \textbf{Y} & \textbf{Z}\\
         \hline\hline
-        hd\_1x2x6\_centralAPA                & 74\% & 95\% & 87.5\%\\
-        hd\_1x2x6\_lateralAPA                & 69\% & 95\% & 87.5\%\\
-        vd\_1x8x14\_3view\_30deg             & 33\% & 92\% & 88\%\\
+        hd\_1x2x6\_centralAPA & \SI{3.9}{\centi\meter} -- \num{50.6}\% & \SI{1}{\centi\meter} -- \num{92.1}\% & \SI{1}{\centi\meter} -- \num{92.2}\%\\
+        % hd\_1x2x6\_lateralAPA                & 69\% & 95\% & 87.5\%\\
+        vd\_1x8x14\_3view\_30deg & \SI{1}{\centi\meter} -- \num{15.3}\% & \SI{1}{\centi\meter} -- \num{89.5}\% & \SI{1}{\centi\meter} -- \num{90.5}\%\\
         vd\_1x8x14\_3view\_30deg\_optimistic & & & \\
         \hline
     \end{tabular}
-    \caption[width=1\linewidth]{Vertex error comparison between geometries. Percentage of \SI{18}{\mega\electronvolt} sample below coordinate error.\label{tab:VERTEX_ERROR_COMPARISON}}
+    \caption[width=1\linewidth]{Vertex resolution comparison between geometries. Percentage of \SI{10}{\mega\electronvolt} sample below coordinate tolerance.\label{tab:VERTEX_ERROR_COMPARISON}}
 \end{table}
+
+\subsection{Flash--Matching Effects on Resolution}\label{sec:FLASH_MATCHING_EFFECT}
+As already explained, the flash--matching step is a crucial in the reconstruction process, as it allows to associate a TPC clusters with the corresponding flash and hence obtain the correct drift coordinate of the interaction.
+
+\textbf{Add flash--matching effects on the energy resolution.}

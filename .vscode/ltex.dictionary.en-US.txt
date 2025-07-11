@@ -5,5 +5,7 @@ astroparticle
 calorimetric
 spallation
 shotcrete
-ionise
-ionisation
+ionize
+ionization
+inflexed
+Vertexing
