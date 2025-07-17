@@ -1,6 +1,6 @@
 % !TEX root = ~/Code/TN_LOWE_RECONSTRUCTION/main.tex
 \documentclass[a4paper]{article}  % Default LaTeX article class
-\usepackage[a4paper, margin=1in]{geometry} % Set page size and margins
+\usepackage[a4paper, margin=0.75in]{geometry} % Set page size and margins
 \usepackage[english]{babel}       % Add babel package for language support
 \usepackage[numbers]{natbib}      % For bibliography management
 \usepackage{bookmark}             % For better handling of outlines
@@ -20,6 +20,10 @@
 }
 \usepackage{geometry}             % For setting page dimensions
 \usepackage{siunitx}
+% Add year as unit in the siunitx package
+\DeclareSIUnit \photoelectron {PE}
+\DeclareSIUnit \photon {photon}
+\DeclareSIUnit \electron {e-}
 \usepackage{cleveref}
 \usepackage{subcaption}
 \usepackage[nohyperlinks,printonlyused]{acronym}
