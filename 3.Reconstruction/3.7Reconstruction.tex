@@ -1,0 +1,14 @@
+\subsection{Neutrino Energy Smearing\label{sec:SIGNAL_SMEARING}}
+Due to the missing nuclear binding energy and undetected soft particles, the reconstructed neutrino energy is expected to systematically underestimate the true value. As a final step to the reconstruction process, all energies (\textbf{TotalEnergy}, \textbf{SelectedEnergy}, \textbf{SolarEnergy} and \textbf{ClusterEnergy}) are calibrated with a linear fit to compensate for systematic losses in the previous clustering or calibration processes. This final global correction is applied to bring the distribution into agreement with the simulation truth:
+
+\begin{equation}
+    E_{\nu}^{\text{cal}} = \left(E_{\nu}^{\text{raw}} - n\right) / m,
+\end{equation}
+
+with \( m \) and \( n \) obtained from a linear fit to the true versus reconstructed neutrino energy spectrum of the \ac{MC} sample as shown in \cref{fig:NEUTRINO_ENERGY_SMEARING}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Reco_Neutrino_Energy_Norm_Hist2D_Fit.png}
+    \caption[width=1\linewidth]{Neutrino energy smearing from the calibrated signal.\label{fig:NEUTRINO_ENERGY_SMEARING}}
+\end{figure}

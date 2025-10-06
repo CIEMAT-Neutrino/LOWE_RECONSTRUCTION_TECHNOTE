@@ -10,6 +10,8 @@
 \usepackage{amsfonts}             % For additional math fonts
 \usepackage{amssymb}              % For additional math symbols
 \usepackage{xcolor}               % For color support
+\usepackage{csvsimple}            % For including CSV files
+\usepackage{booktabs}             % For better table formatting
 \usepackage{hyperref}             % For hyperlinks in the document
 \hypersetup{
     colorlinks = true,
@@ -32,12 +34,12 @@
 \selectlanguage{english}          % Sets the language of the document.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\input{0Frontmatter}
-\input{1Introduction}
-\input{2Simulation}
-\input{3Reconstruction}
-\input{4Results}
-\input{5Conclusion}
+\input{0.Frontmatter/0Frontmatter}
+\input{1.Introduction/1Introduction}
+\input{2.Simulation/2Simulation}
+\input{3.Reconstruction/3Reconstruction}
+\input{4.Results/4Results}
+\input{5.Conclusion/5Conclusion}
 \clearpage                    % Sometimes you want the rest on separate pages.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,6 +57,7 @@
     \acro{APA}{Anode Plane Assembly}
     \acro{CC}{Charged Current}
     \acro{CPA}{Cathode Plane Assembly}
+    \acro{CRP}{Charge Readout Plane}
     \acro{DUNE}{Deep Underground Neutrino Experiment}
     \acro{ES}{Elastic Scattering}
     \acro{FD}{Far Detector}
@@ -66,10 +69,12 @@
     \acro{MC}{Monte Carlo}
     \acro{ML}{Machine Learning}
     \acro{NC}{Neutral Current}
+    \acro{PCB}{Printed Circuit Board}
     \acro{PDS}{Photon Detection System}
     \acro{PE}{Photoelectron}
     \acro{RMS}{Root Mean Square}
     \acro{SiPM}{Silicon Photomultiplier}
+    \acro{SURF}{Sanford Underground Research Facility}
     \acro{PMT}{Photomultiplier Tube}
     \acro{TPC}{Time Projection Chamber}
     \acro{VD}{Vertical--Drift}
@@ -80,6 +85,6 @@
 %--------------------
 \clearpage                % Sometimes it is useful to have bibliography on separate page.
 \onecolumn                % If you want 1 column for appendix.
-% \input{Text/Appendix}     % Comment out to exclude appendix
+\input{Appendix/Appendix}     % Comment out to exclude appendix
 
 \end{document}

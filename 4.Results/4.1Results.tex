@@ -1,0 +1,34 @@
+\subsection{Neutrino Vertex Resolution}\label{sec:VERTEX_RESOLUTION}
+The vertex resolution is defined from the distance between the reconstructed vertex and the true vertex position. Note that this analysis reconstructs particle interactions as point--like objects and therefore reconstructs a vertex that is shifted on average to the center of the true particle track. For the cases in which a coordinate cannot be determined (applicable to x-- and y-- coordinates), the reconstructed coordinate is set to the center of the active volume. The vertex error is then defined as the difference between the reconstructed and true coordinates.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Vertex_Smearing.png}
+    \caption[width=1\linewidth]{Vertex smearing from calibrated signal.\label{fig:SIGNAL_VERTEX_SMEARING}}
+\end{figure}
+
+As explained in \cref{sec:RECONSTRUCTION}, the drift--coordinate of the reconstructed vertex is obtained from the flash--matching algorithm, which combines the information from the \ac{TPC} cluster and the associated \ac{PDS} flash. The results are shown in~\cref{fig:SIGNAL_VERTEX_SMEARING} for the \textit{vd\_1x8x14\_3view\_30deg} geometry with nominal background production. These distributions are not Gaussian, as expected from the nature of the matching algorithms. The resulting matching can be correct, leading to a small error, or completely wrong, leading to a large error in the reconstructed coordinate. To have a better understanding of the reconstruction performance, we can compute the cumulative vertex error~\cref{fig:CUMMULATIVE_VERTEX_ERROR}. This plot shows the percentage of events that are reconstructed within a certain vertex error tolerance. For instance, we can see that approximately \num{90}\% of the events have a vertex error below \SI{1}{\centi\meter} in the y-- and z--coordinates, while only about \num{60}\% of the events achieve this level of accuracy in the x--coordinate.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Cumulative_Vertex_Error.png}
+    \caption[width=1\linewidth]{\ac{VD} cumulative vertex error distribution.\label{fig:CUMMULATIVE_VERTEX_ERROR}}
+\end{figure}
+
+Given that the distributions are not Gaussian, we can still attempt to fit a Gaussian function to the vertex error distributions by ignoring the tails to extract a vertex resolution from the FWHM of the fit as a figure of merit. This is done by fitting a Gaussian function to the core of the distribution. The results are shown in~\cref{fig:SIGNAL_VERTEX_RESOLUTION} for the \textit{vd\_1x8x14\_3view\_30deg} geometry with and without nominal background production.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/vd_1x8x14_3view_30deg_marley_official_Vertex_Error.png}
+    \includegraphics[width=.49\linewidth]{Images/vd_1x8x14_3view_30deg_nominal_marley_official_Vertex_Error.png}
+    \caption[width=1\linewidth]{\ac{VD} vertex error distribution. (left) Neutrino production. (right) Neutrino $+$ nominal background production.\label{fig:SIGNAL_VERTEX_ERROR}}
+\end{figure}
+
+The results of this fitting procedure as a function of true neutrino energy are presented in~\cref{fig:SIGNAL_VERTEX_RESOLUTION} for both the neutrino-only and neutrino-plus-background samples. The vertex resolution is found to be between \SI{0.5}{\centi\meter} and \SI{2.5}{\centi\meter} except for the x--coordinate in the neutrino-plus-background sample, which is between \SI{1.5}{\centi\meter} and \SI{3.5}{\centi\meter}. This degradation in the x--coordinate resolution is expected due to the pile--up of background events, which leads to a smearing of the time resolution of individual ophits in the correctly associated flashes. The degradation in vertex resolution with increased neutrino energy is a side effect of the point--like reconstruction approach, which places the reconstructed vertex at the center of the neutrino-induced particle track. As the neutrino energy increases, the average particle track size also increases, leading to a larger displacement between the true interaction vertex and the reconstructed vertex. Currently, there is no low--energy physics analysis in DUNE that would strongly benefit from a vertex resolution better than a few centimeters. For example, in the case of solar neutrinos, where external cavern--gammas are one of the major backgrounds, the Compton scattering length is on the order of tens of centimeters, which is much larger than the achieved vertex resolution. But, if needed, the vertex resolution could be improved by implementing a more sophisticated reconstruction algorithm that takes into account the topology of the event.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/vd_1x8x14_3view_30deg_marley_official_Vertex_Error_Resolution.png}
+    \includegraphics[width=.49\linewidth]{Images/vd_1x8x14_3view_30deg_nominal_marley_official_Vertex_Error_Resolution.png}
+    \caption[width=1\linewidth]{\ac{VD} vertex resolution from Gaussian fit of error distributions. (left) Neutrino production. (right) Neutrino $+$ nominal background production.\label{fig:SIGNAL_VERTEX_RESOLUTION}}
+\end{figure}

@@ -1,0 +1,28 @@
+\subsection{Flash Matching\label{sec:FLASH_MATCHING}}
+The first step in the signal reconstruction process is the attempt to match the reconstructed primary \ac{TPC} cluster with its corresponding \ac{PDS} flash. Note that this step is not strictly required for the energy reconstruction, as the drift attenuation correction can be applied statistically. However, the matching is essential for the correct reconstruction of the neutrino position and, most importantly, background fiducialization. This is particularly important for low--energy solar neutrino analyses, where the signal rate is low and the high energy tails of the background spectra can leak into the signal region. The matching is also important for supernova neutrino analyses, where the time structure of the neutrino burst provides valuable information about the supernova dynamics.
+
+The matching is performed by evaluating the distance between the \ac{TPC} vertex and the PDS flash position, as well as the time difference between the \ac{TPC} cluster and the PDS flash. The matching efficiency is defined as the fraction of \ac{TPC} clusters that have a corresponding pure PDS flash. \cref{fig:FLASH_MATCHING} shows the flash--matching efficiency as a function of the distance to the PDS plane and the neutrino energy. The matching efficiency is high for distances up to \SI{1}{\meter} and decreases for larger distances. The matching efficiency is also higher for higher neutrino energies. This is expected, as the PDS flashes are more likely to be detected for higher energy depositions.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_lateralAPA_marley_official_TPC_Cluster_Efficiency_Scan.png}
+    \caption[width=1\linewidth]{Flash--matching efficiency. (left) As a function of distance to the PDS plane. (right) As a function of neutrino energy.\label{fig:FLASH_MATCHING}}
+\end{figure}
+
+For any given \ac{TPC} cluster, the matching strategy follows these steps:
+
+\begin{enumerate}
+    \item\textbf{Distance Calculation}: Compute the distance between the \ac{TPC} cluster vertex and all PDS flash positions.
+    \item\textbf{Time Difference Calculation}: Calculate the time difference between the \ac{TPC} cluster and the PDS flash. This must be smaller than the drift time of the electrons in the LAr.
+    \item\textbf{Candidate Selection Criteria}: A PDS flash is considered adjacent to a \ac{TPC} flash if the distance $(\text{TPC}_\text{y} - \text{PDS}_\text{y})^2 / \text{AdjOpFlashY}^2 + (\text{TPC}_\text{Z} - \text{PDS}_\text{Z})^2 / \text{AdjOpFlashZ}$ is smaller than 1, where \( \text{AdjOpFlashY} \) and \( \text{AdjOpFlashZ} \) are the adjusted matching distances in the 2 projected coordinates, respectively.
+    \item\textbf{Matching Criteria}: The algorithm consider 3 additional cuts to prevent the random matching of background cluster:
+    \begin{itemize}
+        \item The minimum number of hits in the PDS flash: AdjOpFlashMinNHitCut (by default 3).
+        \item The minimum number of PEs in the PDS flash: AdjOpFlashMinPECut (by default 20).
+        \item The maximum ratio of AdjOpFlashMaxPE / AdjOpFlashPE: AdjOpFlashMaxPERatioCut (by default 1). This is intended to prevent the matching of background PDS flashes, wich are less homogeneous in the number of PEs compared to the signal PDS flashes.
+    \end{itemize}
+\end{enumerate}
+
+Select the PDS flash with the highest number of PE as the matching candidate for the \ac{TPC} cluster. If no PDS flash is found within the matching criteria, the \ac{TPC} cluster is considered unmatched.
+
+From this matching one can reconstruct the drift coordinate of the \ac{TPC} cluster, which is essential for the correct reconstruction of the neutrino energy. The drift coordinate is computed from the time between the \ac{TPC} vertex and the PDS flash by taking into account the drift velocity of the electrons in the \ac{LAr}.

@@ -1,0 +1,36 @@
+\subsection{Electron--Lifetime Correction}\label{sec:ELECTRON_LIFETIME}
+\ac{TPC} hits are first grouped into spatial clusters using a dedicated clustering algorithm. Each event contains a \textbf{main cluster}, corresponding to the primary outgoing electron, and zero or more \textbf{adjacent clusters}, interpreted as gamma-induced ``blips''. The first step in calibration involves correcting the total ionization charge of each cluster for the electron--lifetime attenuation in the \ac{LAr} (see~\cref{eq:ELECTRON_LIFETIME}).
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_SignalParticleKineticEnergy_vs_NHits.png}
+    \includegraphics[width=0.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_Charge_Correction_Hist2D.png}
+    \caption[width=1\linewidth]{(left) Neutrino energy correlation with number of hits in the primary cluster. (right) Drift attenuation for the main electron cluster.\label{fig:DRIFT_ATTENUATION}}
+\end{figure}
+
+\begin{equation}
+    \dfrac{Q_\text{raw}(n_\text{hit})}{E^\text{truth}_e} = F_0(n_\text{hit}) \cdot \exp\left(\frac{t^\text{drift}}{\tau_e}\right),
+\end{equation}\label{eq:ELECTRON_LIFETIME}
+
+where \( Q_{\text{raw}} \) is the observed (uncorrected) cluster charge, \( E^\text{truth}_e \) is the true main electron energy of the interaction, \( F_0 \) is the charge--to--energy correction factor, \( t^\text{drift} \) is the true drift time of the electron, and \( \tau_e \) is the electron lifetime measured here independently and cross-checked against the simulation input.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_Charge_Corrected_Charge.png}
+    \caption[width=1\linewidth]{Drift attenuation correction.\label{fig:CHARGE_CORRECTION}}
+\end{figure}
+
+Assuming the main cluster corresponds to a fully-contained electron, we take its known true energy (from simulation) as a reference and compute the charge--to--energy conversion factor for each $(n_\text{hit})$ threshold. Additionally, to assess the impact of this assumption, with the goal of characterizing signal clusters in the context of background which limits the clustering parameters, one can also investigate a ``cheated charge''. This is computed for all clusters, adding the surrounding charge that has been backtracked to the main electron of the interaction. A calibration based on this cheated clustering gives us an understanding of the losses that arise from a limited clustering ability in the context of background.
+
+\begin{equation}
+    E_{\text{cluster}} = \alpha(n_{\text{hit}}, E_{\text{true}}) \cdot Q_{\text{corr}}.
+\end{equation}
+
+After the truth drift correction has been applied to the data, the charge correction factor is immediately obtained.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Charge_Correction_Factor.png}
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_ElectronCharge_Correction_Factor.png}
+    \caption{Per hit correction factor distributions. (left) Primary cluster charge. (right) Cheated electron cluster charge.\label{fig:CHARGE_CORRECTION_FACTOR}}
+\end{figure}

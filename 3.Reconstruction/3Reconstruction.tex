@@ -1,0 +1,14 @@
+% !TEX root = ~/Code/TN_LOWE_RECONSTRUCTION/main.tex
+\section{Neutrino Reconstruction Strategy\label{sec:RECONSTRUCTION}}
+% Delete the text and write your Method(s) here:
+%------------------------------------
+The calibration and characterization of the \ac{CC} neutrino signal are based on the true information of the main electron of the interaction. If not otherwise mentioned, the plots in this section are produced from a MARLEY generated \ac{CC} neutrino sample with central \ac{APA} background. The first step of the reconstruction process has already happened when clustering the hits of the \ac{TPC} and \ac{PDS} detector subsystems in the simulation's \emph{reco1} stage (see \cref{sec:EVENT_DEFINITION}). Next, we evaluate the detection efficiency and completeness of the collection-- induction--matched \ac{TPC} clusters (see \cref{sec:DETECTION_EFFICIENCY}). Subsequently, the event electron is corrected in charge for the drift attenuation before computing a hit--dependent calibration factor that recover the particle's original kinetic energy (see \cref{sec:ELECTRON_CALIBRATION}). Finally, the average calibration factor is applied to all adjacent clusters of the event candidate and the total neutrino energy is computed from four different algorithms (see \cref{sec:NEUTRINO_CALIBRATION}). During the \ac{TPC} calibration process, the drift coordinate is assumed from truth. A discussion on how the intrinsic background contamination of the detector affects the signal reconstruction at these low energies and the effects on drift coordinate resolution (as a result of \ac{TPC}--\ac{PDS} match) are presented in~\cref{sec:RESULTS}.
+
+\input{3.Reconstruction/3.0Reconstruction}
+\input{3.Reconstruction/3.1Reconstruction}
+\input{3.Reconstruction/3.2Reconstruction}
+\input{3.Reconstruction/3.3Reconstruction}
+\input{3.Reconstruction/3.4Reconstruction}
+\input{3.Reconstruction/3.5Reconstruction}
+\input{3.Reconstruction/3.6Reconstruction}
+\input{3.Reconstruction/3.7Reconstruction}

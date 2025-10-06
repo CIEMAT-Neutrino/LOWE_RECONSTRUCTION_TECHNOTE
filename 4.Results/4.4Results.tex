@@ -1,0 +1,16 @@
+\subsection{Neutrino Energy Resolution}\label{sec:ENERGY_RESOLUTION}
+The energy resolution is defined as the ratio of the standard deviation of the reconstructed neutrino energy to the mean value of the neutrino energy. The energy resolution is calculated from the calibrated neutrino energies. The results are shown in~\cref{fig:SIGNAL_RMS} for the 4 different reconstruction algorithms.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Calibration_RMS.png}
+    \caption[width=1\linewidth]{Energy resolution from calibrated neutrino energies with different reconstruction algorithms.\label{fig:SIGNAL_RMS}}
+\end{figure}
+
+As expected, the \textbf{ClusterEnergy} algorithm has the worst energy resolution for neutrino energies below \SI{10}{\mega\electronvolt}, as it does not take into account the energy deposited by adjacent gamma blips which can amount to more than 50\% of the initial neutrino energy. The \textbf{SelectedEnergy} and \textbf{SolarEnergy} algorithms have the best resolution in this range. As the energy of the neutrino goes higher, the relative weight of the adjacent background clusters starts becoming less important. Over the range of \qtylist{10;20}{\mega\electronvolt} all algorithms perform almost identical and for the \qtylist{20;30}{\mega\electronvolt} neutrino energies, the \textbf{TotalEnergy} algorithm starts to outperform the others. Importantly, this trend is maintained for any hit threshold selected, ensuring that the energy resolution is robust against the clustering criteria.
+
+Overall, the \textbf{SolarEnergy} algorithm is the best choice for neutrino energies below \SI{20}{\mega\electronvolt}, as it has better (or compatible) energy resolution compared to the other algorithms. The benefit of this method that is not shown in this comparison is that it sets an upper limit to the reconstructed energies of background particles. If not constrained, cavern backgrounds such as neutrons or gammas can contribute significantly with fake events to physics analyses such as the solar neutrino oscillation studies. By only adding a maximum fixed amount of energy to the main clusters produced by these particles, one ensures that their contribution is limited to lower energies compared to the full scope of the solar neutrino spectrum.
+
+\textbf{Add information about attenuation in the medium and how it affects the energy resolution. Add electron energy resolution.}
+
+\textbf{Add information about the vertex resolution for abs(X) > 5cm and < 15 cm.}

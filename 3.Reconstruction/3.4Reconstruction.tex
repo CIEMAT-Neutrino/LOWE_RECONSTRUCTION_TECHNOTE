@@ -1,0 +1,21 @@
+\subsection{Electron Energy Calibration}\label{sec:ELECTRON_CALIBRATION}
+Even after lifetime and charge calibration, small systematic biases may remain in the reconstructed electron energy due to recombination modelling, imperfect response, or clustering inefficiencies. We apply a linear correction to account for this residual offset:
+
+\begin{equation}
+    E_{e}^{\text{final}} = \left(E_{\text{cluster}} - n\right) / m,
+\end{equation}
+
+where \( m \) and \( n \) are derived from the linear fits to the simulated \( E_{\text{true}} \) versus \( E_{\text{reco}} \) distributions as shown in \cref{fig:CHARGE_CALIBRATION}. The calibration is performed separately for the main electron cluster and the cheated electron cluster. The calibration factor is computed as a function of the number of hits in the cluster (see~\cref{fig:ENERGY_CALIBRATION}), which serves as a proxy for the electron energy.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_Charge_Calibration_2D_NHits1.png}
+    \caption[width=1\linewidth]{Charge calibration for the main electron cluster. (left) Corrected charge over true electron energy. (center) Linear fit to reco energy over true electron energy. (rigth) Comparison between (true - reco) for corrected (before linear fit calibration) and calibrated (after linear fit calibration) reco energy distributions.\label{fig:CHARGE_CALIBRATION}}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_Charge_Calibration.png}
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_ElectronCharge_Calibration.png}
+    \caption{Per hit calibration results. (left) Primary cluster charge. (right) Cheated electron cluster charge. Blue shows the slope and red the intercept values of the linear fits.\label{fig:ENERGY_CALIBRATION}}
+\end{figure}

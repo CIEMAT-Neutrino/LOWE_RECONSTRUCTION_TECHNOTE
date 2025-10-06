@@ -1,0 +1,16 @@
+\begin{tabular}{lccc}
+\toprule
+Type & Radius (cm) & Mean & STD \\
+\midrule
+Signal & 20 & 0.57 & 0.77 \\
+Background & 20 & 0.06 & 0.27 \\
+Signal & 40 & 0.83 & 0.96 \\
+Background & 40 & 0.22 & 0.53 \\
+Signal & 60 & 0.93 & 1.04 \\
+Background & 60 & 0.43 & 0.78 \\
+Signal & 80 & 0.98 & 1.07 \\
+Background & 80 & 0.66 & 1.01 \\
+Signal & 100 & 1.00 & 1.09 \\
+Background & 100 & 0.84 & 1.15 \\
+\bottomrule
+\end{tabular}
