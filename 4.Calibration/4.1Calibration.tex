@@ -1,0 +1,47 @@
+\subsection{Electron-Lifetime Correction}\label{sec:ELECTRON_LIFETIME}
+\gls{tpc} hits are first grouped into spatial clusters using a dedicated clustering algorithm. Each event contains a \textbf{main cluster}, corresponding to the primary outgoing electron, and zero or more \textbf{adjacent clusters}, interpreted as gamma-induced ``blips''. The first step in calibration involves correcting the total ionization charge of each cluster for the electron-lifetime attenuation in the \gls{lar} (see~\cref{eq:ELECTRON_LIFETIME}).
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.49\linewidth]{Images/hd_1x2x6_marley_official_nhit_distributions_electronk_nhits_scan.png}
+    \includegraphics[width=0.49\linewidth]{Images/vd_1x8x14_3view_30deg_marley_official_nhit_distributions_electronk_nhits_scan.png}
+    \caption[width=1\linewidth]{Neutrino energy correlation with number of hits in the primary cluster. \label{fig:DRIFT_ATTENUATION}}
+\end{figure}
+
+\begin{equation}
+    \dfrac{Q_\text{raw}(n_\text{hit})}{E^\text{truth}_e} = F_0(n_\text{hit}) \cdot \exp\left(\frac{t^\text{drift}}{\tau_e}\right),
+\end{equation}\label{eq:ELECTRON_LIFETIME}
+
+where \( Q_{\text{raw}} \) is the observed (uncorrected) cluster charge, \( E^\text{truth}_e \) is the true main electron energy of the interaction, \( F_0 \) is the charge-to-energy correction factor, \( t^\text{drift} \) is the true drift time of the electron, and \( \tau_e \) is the electron lifetime measured here independently and cross-checked against the simulation input.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_charge_lifetime_correction_corrected_nhitsnan_hist2d.png}
+    \caption[width=1\linewidth]{Drift attenuation correction.
+    \label{fig:CHARGE_CORRECTION}}
+\end{figure}
+
+Assuming the main cluster corresponds to a fully-contained electron, we take its known true energy (from simulation) as a reference and compute the charge-to-energy conversion factor for each $(n_\text{hit})$ threshold. Additionally, to assess the impact of this assumption, with the goal of characterizing signal clusters in the context of background which limits the clustering parameters, one can also investigate a ``cheated charge''. This is computed for all clusters, adding the surrounding charge that has been backtracked to the main electron of the interaction. A calibration based on this cheated clustering gives us an understanding of the losses that arise from a limited clustering ability in the context of background.
+
+\begin{equation}
+    E_{\text{cluster}} = \alpha(n_{\text{hit}}, E_{\text{true}}) \cdot Q_{\text{corr}}.
+\end{equation}
+
+After the truth drift correction has been applied to the data, the charge correction factor is immediately obtained.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_marley_official_clustering_fit.png}
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_marley_official_electronclustering_fit.png}
+    \caption{Per hit correction factor distributions. (left) Primary cluster charge. (right) Cheated electron cluster charge.\label{fig:CHARGE_CORRECTION_FACTOR}}
+\end{figure}
+
+\Cref{fig:CHARGE_CORRECTION_FACTOR} shows the charge correction factor distributions for both the main cluster and the cheated electron cluster. The correction factor varies with increasing number of hits. Due to the nature of clustering, the first two points of the distribution are affected by threshold effects and present a high charge-to-energy ratio to compensate for the lack of completeness. Intermediate hit clusters have the lowest charge-to-energy ratio, as they are more likely to be fully contained within a few hits. As the number of hits increases, the clustering efficiency decreases, leading to a higher charge-to-energy ratio. This is because higher energy electrons produce more extensive ionization tracks, which are more challenging to fully capture within a single cluster.
+
+This trend is well-described by an exponential plus logistic function. The functional form used to fit the charge correction factor as a function of the number of hits is given by:
+
+\begin{equation}
+    \alpha(n_{\text{hit}}) = a \cdot \exp(-b \cdot n_{\text{hit}}) + c\cdot \left(1 + \exp(-d \cdot n_{\text{hit}})\right)^{-1},
+\end{equation}
+
+where \( a, b, c, d \) are fit's exponential amplitude, decay, limiting constant, and sigmoid growth parameters, respectively. This function captures the initial rapid decrease in the correction factor for low hit counts, followed by a more gradual increase at higher hit counts, reflecting the underlying physics of charge collection and clustering in the detector.

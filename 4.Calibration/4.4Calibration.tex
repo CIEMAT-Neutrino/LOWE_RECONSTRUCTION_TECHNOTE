@@ -9,19 +9,40 @@ This strategy is the first and most obvious approach for neutrino energy reconst
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_AdjCl_Radius_Charge_Distribution.png}
+    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_adjcl_selection_signal_hist2d.png}
     \caption[width=1\linewidth]{Distribution of the adjacent clusters charge and distance to the main electron cluster.\label{fig:ADJACENT_CLUSTER_RADIUS_CHARGE}}
 \end{figure}
 
 The next simple solution is to apply a selection on the adjacent clusters (\textbf{SelectedEnergy}), which are assumed to be gamma-induced ``blips''. The selection is based on the adjacent cluster charge and distance to the main electron cluster. The adjacent clusters are selected if they have a charge above a certain threshold and are within a certain distance to the main electron cluster. The thresholds are tuned to maximize the signal over background ratio. \cref{fig:ADJACENT_CLUSTER_RADIUS_CHARGE} shows the distribution of the adjacent clusters charge and distance to the main electron cluster and selection thresholds.
 
+\iffalse
 \begin{figure}[ht!]
     \centering
     \includegraphics[trim={6cm 0cm 6cm 0cm},clip,width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Random_Forest_Score.png}
-    \caption[width=1\linewidth]{(left) Purity vs Efficiency curve of the random forest regressor for both the train and the test samples. (center) Score of the random forest regressor for both \ac{CC} samples. (right) ROC curve of the random forest regressor.\label{fig:RF_SCORE}}
+    \caption[width=1\linewidth]{(left) Purity vs Efficiency curve of the random forest regressor for both the train and the test samples. (center) Score of the random forest regressor for both \gls{cc} samples. (right) ROC curve of the random forest regressor.\label{fig:RF_SCORE}}
 \end{figure}
+\fi
 
-The next step is to apply a machine learning algorithm to the adjacent clusters to improve the energy resolution. The algorithm is trained on the main cluster properties and the average adjacent cluster features. The algorithm is a random forest regressor, which is trained on the simulated data. The random forest regressor is used to predict the energy of the adjacent clusters, which are then added to the main electron energy to obtain the total neutrino energy (\textbf{SolarEnergy}). To simply the problem and motivated by the two main calibration lines from the \ac{CC} interaction displayed in~\cref{fig:MARLEY_CC_INTERACTION}, the \ac{ML} algorithm is trained two add one of two total adjacent cluster energy values: \qtylist{4.47;6.41}{\mega\electronvolt}. \cref{fig:RF_SCORE} shows the score of the random forest regressor which provides an AUC of \num{0.77} for the test sample, which means that the algorithm is able to distinguish between signal and background with a good efficiency. The random forest regressor is trained on the following features:
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{lcc}
+        \hline
+        \textbf{Configuration} & \textbf{Charge (ADC x tick)} & \textbf{Distance (cm)} \\ \hline
+        \hline
+        hd\_1x2x6 & 5 & 50 \\
+        hd\_1x2x6\_centralAPA & 10 & 30 \\
+        hd\_1x2x6\_lateralAPA & 8 & 40 \\
+        vd\_1x8x14\_3view\_30deg & 12 & 25 \\
+        vd\_1x8x14\_3view\_30deg\_nominal & 15 & 20 \\
+        vd\_1x8x14\_3view\_30deg\_shielded & 10 & 30 \\
+        \hline
+    \end{tabular}
+    \caption{Adjacent cluster selection thresholds for different background scenarios.\label{tab:ADJACENT_CLUSTER_SELECTION_THRESHOLDS}}
+\end{table}
+
+\Cref{tab:ADJACENT_CLUSTER_SELECTION_THRESHOLDS} summarizes the different thresholds used for the adjacent cluster selection, based on the background scenario. The selected adjacent clusters are then summed to the primary cluster energy to obtain the reconstructed neutrino energy (\textbf{SelectedEnergy}).
+
+The next step is to apply a machine learning algorithm to the adjacent clusters to improve the energy resolution. The algorithm is trained on the main cluster properties and the average adjacent cluster features. The algorithm is a random forest regressor, which is trained on the simulated data. The random forest regressor is used to predict the energy of the adjacent clusters, which are then added to the main electron energy to obtain the total neutrino energy (\textbf{SolarEnergy}). To simply the problem and motivated by the two main calibration lines from the \gls{cc} interaction displayed in~\cref{fig:MARLEY_CC_INTERACTION}, the \gls{ml} algorithm is trained two add one of two total adjacent cluster energy values: \qtylist{4.47;6.41}{\mega\electronvolt}.\iffalse \cref{fig:RF_SCORE} shows \fi The score of the random forest regressor which provides an AUC of \num{0.77} for the test sample, which means that the algorithm is able to distinguish between signal and background with a good efficiency. The random forest regressor is trained on the following features:
 
 \begin{itemize}
     \item NHits: number of hits in the main electron cluster.
@@ -37,7 +58,7 @@ The next step is to apply a machine learning algorithm to the adjacent clusters 
     \item SelectedEnergy: reconstructed \textbf{SelectedEnergy}.
 \end{itemize}
 
-From which the highlighted features are the most important for the random forest regressor, as shown in \cref{fig:RF_FEATURE_IMPORTANCE}.
+From which the highlighted features are the most important for the random forest regressor, as shown in \cref{fig:RF_FEATURE_IMPORTANCE}. Finally, as a benchmark for comparison between the here presented reconstruction algorithms and with the aim of quantizing the impact of adjacent gammas on the total neutrino energy reconstruction, we introduce the \textbf{ClusterEnergy} algorithm as the reconstruction method based purely on the main electron cluster. The only correction is a fixed calibration offset applied to the full sample to align the center of the distribution with the true energy.
 
 \begin{figure}[ht!]
     \centering
@@ -46,4 +67,3 @@ From which the highlighted features are the most important for the random forest
     \caption[width=1\linewidth]{(left) Feature importance of the random forest regressor. (right) Discriminant calibration for the random forest regressor.\label{fig:RF_FEATURE_IMPORTANCE}}
 \end{figure}
 
-Finally, as a benchmark for comparison between the here presented reconstruction algorithms and with the aim of quantizing the impact of adjacent gammas on the total neutrino energy reconstruction, we introduce the \textbf{ClusterEnergy} algorithm as the reconstruction method based purely on the main electron cluster. The only correction is a fixed calibration offset applied to the full sample to align the center of the distribution with the true energy.

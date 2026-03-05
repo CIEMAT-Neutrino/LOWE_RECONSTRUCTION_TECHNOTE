@@ -1,0 +1,19 @@
+\subsection{Detector Simulation}
+In this, so called, \emph{detsim} stage; after the effective propagation of ionisation electrons and scintillation photons to the TPC (wires or strips) and PDS (photodetectors) readout elements, the signal formation is modelled. This stage takes as input the energy depositions (\texttt{edeps}) and the associated scintillation photons (\texttt{simphotons}) from the particle propagation step. The detector response to these inputs, produces digitized signals based on the detector's readout electronics and noise characteristics. The two components of the detector response simulation are:
+
+\begin{itemize}
+    \item{\textbf{TPC Signal}}.
+    Ionisation electrons drift under an applied electric field toward the TPC wire planes. During this drift, the electrons experience diffusion (both longitudinal and transverse), attachment to electronegative impurities (parametrised by the electron lifetime), and charge loss due to recombination. These effects are modelled to modify the total collected charge and the temporal and spatial spread of the signal. \gls{dune}s \gls{lartpc} use three planes (also called ``views'') to detect the drifting charge (1 collection plane and 2 induction planes).
+
+    \begin{enumerate}
+        \item\textbf{Induction planes} respond with bipolar signals as electrons pass by without being collected.
+        \item\textbf{Collection plane} responds with unipolar signals as the electrons are finally absorbed.
+    \end{enumerate}
+
+    A correction is applied to account for the different responses of these planes to ensure accurate charge measurement across all views. The motion of charge induces time--dependent signals (waveforms) on the readout channels, which are digitized at high frequency. These raw waveforms are then processed using simulated electronic noise based on detector--specific measurements, which emulates realistic signal--to--noise conditions. This full set of operations are performed in \gls{larsoft} using the Wire--Cell toolkit~\cite{WIRE--CELL_2022}. To improve charge extraction, the waveforms undergo a \textbf{deconvolution procedure}, where the electronics response and noise spectrum are inverted in frequency space to recover a cleaner signal representation. The deconvolved waveforms are evaluated under a \gls{roi} finder algorithm and trimmed for subsequent evaluation. This last step reduces the data volume by focusing only on regions with significant signal activity and trimming all information around the signal peak that is compatible with baseline noise.
+
+    \item{\textbf{PDS Signal}}.
+    Simultaneously, the scintillation photons are detected by the \gls{pds}, composed of \gls{xa}s. The \texttt{simphotons} from Geant4 are converted into raw signals. Similarly to the \gls{tpc} reconstruction, the \gls{pds} response is also emulated with realistic timing resolution, dark noise, and electronic gain amplification. Simulated waveforms are produced for each optical channel and overlaid with noise. Also in this case, fixed \gls{roi} windows are defined after the waveforms surpass a certain threshold, indicating potential scintillation events. In contract to the \gls{tpc} \gls{roi}s, the waveforms of the \gls{pds} can be stored and process entirely due to the limited number of channels so entire \SI{16}{\micro\second} long \gls{roi}s are stored.
+\end{itemize}
+
+With these steps completed, the simulation produces digitized waveforms for both the \gls{tpc} and \gls{pds} systems, which serve as common input for the event reconstruction stage where hits and clusters are formed, as well as higher level objects for physics analyses. The output of this stage is thought to be equivalent to real detector data, allowing for direct comparison and validation of reconstruction algorithms and physics analyses.

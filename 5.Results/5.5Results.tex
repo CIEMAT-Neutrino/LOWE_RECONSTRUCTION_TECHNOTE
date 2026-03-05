@@ -11,6 +11,13 @@ As expected, the \textbf{ClusterEnergy} algorithm has the worst energy resolutio
 
 Overall, the \textbf{SolarEnergy} algorithm is the best choice for neutrino energies below \SI{20}{\mega\electronvolt}, as it has better (or compatible) energy resolution compared to the other algorithms. The benefit of this method that is not shown in this comparison is that it sets an upper limit to the reconstructed energies of background particles. If not constrained, cavern backgrounds such as neutrons or gammas can contribute significantly with fake events to physics analyses such as the solar neutrino oscillation studies. By only adding a maximum fixed amount of energy to the main clusters produced by these particles, one ensures that their contribution is limited to lower energies compared to the full scope of the solar neutrino spectrum.
 
-\textbf{Add information about attenuation in the medium and how it affects the energy resolution. Add electron energy resolution.}
+As already explained, the flash--matching step in the reconstruction process allows to associate a \gls{tpc} clusters with the corresponding \gls{pds} flash and hence obtain the correct drift coordinate of the interaction. In the context of energy reconstruction, this has an impact on the drift attenuation correction on a cluster-by-cluster basis. 
 
-\textbf{Add information about the vertex resolution for abs(X) > 5cm and < 15 cm.}
+\begin{figure}
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_lateralAPA_Neutrino_SolarEnergy_Resolution.png}
+    \includegraphics[width=.49\linewidth]{Images/vd_1x8x14_3view_30deg_nominal_Neutrino_SolarEnergy_Resolution.png}
+    \caption{(left) \gls{hd} (right) \gls{vd}. Neutrino energy resolution with and without flash--matching. The dashed lines represent the ideal case where the drift coordinate is taken from truth information.\label{fig:FLASH_MATCHING_EFFECT}}
+\end{figure}
+
+As can be seen, in~\cref{fig:FLASH_MATCHING_EFFECT}, the flash--matching step has a residual effect on the energy resolution. The difference between the flash--matched and non-flash--matched cases are small, indicating that the inefficiencies in the energy reconstruction are dominated by other factors, such as clustering inefficiencies and intrinsic energy losses due to nuclear effects and undetected particles. The dashed lines represent the ideal case where the drift coordinate is taken from truth information, showing that even in this idealized scenario, the resolution does not significantly improve.

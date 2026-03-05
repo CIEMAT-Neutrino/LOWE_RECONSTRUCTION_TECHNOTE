@@ -1,0 +1,31 @@
+\subsection{Workspace Geometries\label{sec:GEOMETRY}}
+Due to the high computational load of low-energy productions (including backgrounds), the full scale geometries of the \gls{fd}s are represented in simulation with smaller workspace geometries; designed to provide all possible edge and propagation effects of real neutrino and background interactions but reducing the detector's volume to contain all the signal of a single neutrino event. In this work, we used two geometries: the \gls{hd} workspace geometry (hd\_1x2x6) and the \gls{vd} workspace geometry (vd\_1x8x14\_3view\_30deg). In both cases, the $x$ and $y$ coordinates are set to the same lengths as for the full drift volumes but the $z$ coordinate is shortened roughly $1/4$ and $1/3$ of the full length, respectively. The \gls{hd} workspace features a single central \gls{apa} and two adjacent \gls{cpa}s creating two drift volumes that are designed to emulate the central region of the \gls{hd} detector. On the other hand, the \gls{vd} workspace geometry consists of a single drift volume that represents the upper half of the detector (see \cref{fig:WORKSPACE_GEOMETRY}).
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/Geometries/HDgeometry.png}
+    \includegraphics[width=.49\linewidth]{Images/Geometries/VDgeometry.png}
+    \caption[width=1\linewidth]{(left) The \gls{hd} workspace geometry (hd\_1x2x6\_centralAPA) with a single central \gls{apa} and a drift length of \SI{3.6}{\meter}. (right) The \gls{vd} workspace geometry (vd\_1x8x14\_3view\_30deg).\label{fig:WORKSPACE_GEOMETRY}}
+\end{figure}
+
+The \gls{hd} geometry is used in low-energy neutrino studies simulating two background scenarios: one without external backgrounds from the lateral faces of the cavern \gls{apa} (hd\_1x2x6\_centralAPA) and another one with complete external background (hd\_1x2x6\_lateralAPA). Due to the arrangement of the \gls{tpc} planes in the workspace geometry, the latter background scenario is required to implement the lateral cavern flux in the center of the detector (where the \gls{apa} is placed). This creates a scenario where the central region of the workspace actually represents the most external faces of the detector's charge readout. In both scenarios, we simulate the full set of radiological backgrounds, together with top, bottom, head, and tail external backgrounds. In the hd\_1x2x6\_lateralAPA scenario, the lateral cavern flux is also included in the central \gls{apa} region.
+
+% Add a table with the geometry parameters such as full volume and workspace dimensions, number of apas, drift length, etc. for both HD and VD.
+\begin{table}[ht!]
+    \centering
+    Workspace Comparison \\
+    \begin{tabular}{lcc}
+        \toprule
+        Parameter & \gls{hd} Workspace & \gls{vd} Workspace \\
+        \midrule
+        \#Drift Volumes & 2 & 1 \\
+        Active Volume & \qtyproduct{7.2 x 12 x 14}{\meter} & \qtyproduct{6.5 x 13.5 x 21}{\meter} \\
+        Active Mass & \SI{1.6}{\kilo\tonne} & \SI{2.5}{\kilo\tonne} \\
+        Anode Modules & 12 \gls{apa}s & 28 \gls{crp}s \\
+        Cathode Modules & 24 \gls{cpa}s & 28 Units \\
+        \bottomrule
+    \end{tabular}
+    \caption[width=1\linewidth]{Key parameters of the \gls{hd} and \gls{vd} workspace geometries used in the simulation.\label{tab:WORKSPACE_PARAMETERS}}
+\end{table}
+
+For the \gls{vd} geometry, we consider two scenarios: the nominal scenario, which represents the upper half of the \gls{vd} module (vd\_1x8x14\_3view\_30deg), and a shielded scenario that assumes additional reduction of backgrounds in the form of altered fluxes (vd\_1x8x14\_3view\_30deg\_shielded). The latter scenario is likely to represent the lower half of the \gls{vd} module, where shielding is more suitable from and engineering point of view. This does not require any changes in the geometry itself, but only in the background fluxes used in the simulation. In both cases, we simulate the full set of radiological backgrounds, together with top, head, tail, and lateral external backgrounds (bottom external backgrounds are not simulated in the \gls{vd} geometry due to fact that we are only simulating half of the detector's volume).

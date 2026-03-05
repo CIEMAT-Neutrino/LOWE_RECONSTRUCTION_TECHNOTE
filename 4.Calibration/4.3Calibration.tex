@@ -1,0 +1,29 @@
+\subsection{Adjacent Cluster Calibration}\label{sec:GAMMA_CALIBRATION}
+Applying this calibration to the main electron cluster, we obtain the final calibrated energy of the main electron. For all the adjacent clusters, we simply apply the average charge correction factor obtained from the main electron calibration. There is no additional calibration applied to the adjacent clusters, as the charge calibration factor from the main electron cluster is used. However, we observe a small bias in the reconstructed gamma energy, which is due to the clustering inefficiency and the low energy of the gammas. This bias leads to a poor identification of the nuclear transitions in the neutrino energy spectrum. In \cref{fig:RECO_GAMMA_ENERGY_BACKGROUND}, we show the reconstructed gamma energy distributions for the different nuclear transition types: Gamow-Teller and Fermi. The Fermi transition has a single emission line at \SI{4.38}{\mega\electronvolt}, while the Gamow-Teller has several.
+
+The bias in the reconstructed gamma energy could be corrected by applying a linear calibration, similar to the one applied to the main electron cluster. However, due to the low energy of the gammas, the additional presence of background and the clustering inefficiency of the main electron, it has been considered unnecessary to apply any additional calibration to the adjacent clusters and instead focus on improving the channel selection and clustering efficiency without further bias. Additional work needs to be performed in order to estimate the reconstruction potential that can be obtained from correctly tagging these nuclear transitions.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_marley_official_gamma_energy_iterableNone_hist1d.png}
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralapa_marley_official_gamma_energy_iterableNone_hist1d.png}
+    \caption[width=1\linewidth]{Adjacent cluster gamma signal (left) compared to the selected adjacent clusters (right) for the \gls{hd} productions with and without background activity.\label{fig:RECO_GAMMA_ENERGY_BACKGROUND}}
+\end{figure}
+
+When considering the presence of background activity, as shown in \cref{fig:RECO_GAMMA_ENERGY_BACKGROUND}, the identification of the nuclear transitions becomes even more challenging. The background activity introduces additional low-energy deposits that can be misidentified as gammas from the neutrino interaction, further smearing the reconstructed gamma energy spectrum. This highlights the importance of effective background mitigation strategies and advanced reconstruction techniques to accurately identify and reconstruct the gamma energies associated with neutrino interactions in a realistic detector environment.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=.9\linewidth]{Images/marley_official_adjacent_cluster_distributions_adjclmaine_adjclenergy.png}
+    \caption[width=1\linewidth]{Adjacent cluster true (left) and reconstructed (right) energy distributions in the \gls{hd} and \gls{vd} geometries.\label{fig:ADJACENT_CLUSTER_ENERGY_DISTRIBUTION_TRUE_RECO}}
+\end{figure}
+
+Another way to illustrate the challenge of reconstructing the gamma energies in the presence of background is to look at the true energy distributions of the adjacent clusters for different background scenarios. \Cref{fig:ADJACENT_CLUSTER_ENERGY_DISTRIBUTION_NOMINAL_SHIELDED} shows how the presence of background activity significantly increases the number of low--energy adjacent clusters (\SI{<3}{\mega\electronvolt}), which can be misidentified as gammas from the neutrino interaction. From this comparison it is clear that the shielded background scenario reduces considerably the amount of low--energy deposits, but this effect becomes weaker at higher energies.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/vd_1x8x14_3view_30deg_nominal_marley_official_adjclmaine_signal_scan.png}
+    \includegraphics[width=.49\linewidth]{Images/vd_1x8x14_3view_30deg_shielded_marley_official_adjclmaine_signal_scan.png}
+    \caption[width=1\linewidth]{Adjacent cluster true energy distributions for the nominal (left) and shielded (right) background scenarios in the \gls{vd} geometry. Notice the decrease in low--energy deposits (\SI{<1}{\mega\electronvolt}) when using the shielded background.
+    \label{fig:ADJACENT_CLUSTER_ENERGY_DISTRIBUTION_NOMINAL_SHIELDED}}
+\end{figure}

@@ -1,36 +1,79 @@
-\subsection{Electron--Lifetime Correction}\label{sec:ELECTRON_LIFETIME}
-\ac{TPC} hits are first grouped into spatial clusters using a dedicated clustering algorithm. Each event contains a \textbf{main cluster}, corresponding to the primary outgoing electron, and zero or more \textbf{adjacent clusters}, interpreted as gamma-induced ``blips''. The first step in calibration involves correcting the total ionization charge of each cluster for the electron--lifetime attenuation in the \ac{LAr} (see~\cref{eq:ELECTRON_LIFETIME}).
+\subsection{Flash-Matching}\label{sec:FLASH_MATCHING}
+The first step in the signal reconstruction process is the attempt to match the reconstructed primary \gls{tpc} cluster with its corresponding \gls{pds} flash. Note that this step is not strictly required for the energy reconstruction, as the drift attenuation correction can be applied statistically. However, the matching is essential for the correct reconstruction of the neutrino position and, most importantly, background fiducialisation in specific physics studies. This is particularly important for low-energy solar neutrino analyses, where the signal rate is low and the high energy tails of the background spectra can leak into the signal region. The matching is also important for supernova neutrino analyses, where the time structure of the neutrino burst provides valuable information about the supernova dynamics. 
 
-\begin{figure}[ht!]
+The matching efficiency is defined as the fraction of \gls{tpc} clusters that have been matched to a signal \gls{pds} flash. \Cref{fig:FLASH_MATCHING_VD} show the flash-matching efficiency for the \gls{hd} and \gls{vd} signal productions as function of the different parameters. Note that these have been used as a figure of merit to optimize the matching parameters described above. The goal is to maximize the matching efficiency (\num{>90}\%) while minimizing the reach of the clustering parameters to avoid random background matches.
+
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_SignalParticleKineticEnergy_vs_NHits.png}
-    \includegraphics[width=0.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_Charge_Correction_Hist2D.png}
-    \caption[width=1\linewidth]{(left) Neutrino energy correlation with number of hits in the primary cluster. (right) Drift attenuation for the main electron cluster.\label{fig:DRIFT_ATTENUATION}}
+    \includegraphics[width=\linewidth]{Images/vd_1x8x14_3view_30deg_marley_official_variable_plane_scan.png}
+    \caption[width=1\linewidth]{Flash-matching efficiency for the \gls{vd} geometry. Results are shown as a function of (left) distance to the \gls{pds} plane, (center) true neutrino energy and (right) \gls{pds} plane match.\label{fig:FLASH_MATCHING_PLANE}}
 \end{figure}
 
-\begin{equation}
-    \dfrac{Q_\text{raw}(n_\text{hit})}{E^\text{truth}_e} = F_0(n_\text{hit}) \cdot \exp\left(\frac{t^\text{drift}}{\tau_e}\right),
-\end{equation}\label{eq:ELECTRON_LIFETIME}
+The matching efficiency grows moderately with particle energy and strongly with proximity to the \gls{pds} plane. In the case of the \gls{vd} geometry, the efficiency also depends on the \gls{pds} plane being matched to, as the different planes have different \gls{pds} coverage (see \cref{fig:FLASH_MATCHING_PLANE}). The cathode plane has the highest efficiency, while the membrane planes closest to the anode have the lower efficiency. This is due to the fact that the light produced near the cathode plane has a higher chance of being detected by the \gls{pds} system, as it is closer to the \gls{lar} active volume.
 
-where \( Q_{\text{raw}} \) is the observed (uncorrected) cluster charge, \( E^\text{truth}_e \) is the true main electron energy of the interaction, \( F_0 \) is the charge--to--energy correction factor, \( t^\text{drift} \) is the true drift time of the electron, and \( \tau_e \) is the electron lifetime measured here independently and cross-checked against the simulation input.
-
-\begin{figure}[ht!]
+\begin{table}[ht]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_Charge_Corrected_Charge.png}
-    \caption[width=1\linewidth]{Drift attenuation correction.\label{fig:CHARGE_CORRECTION}}
-\end{figure}
+    \input{Tables/Flash_Matching_Parameters.tex}
+    \caption{Flash-matching parameters for \gls{hd} and \gls{vd} geometries.\label{tab:FLASH_MATCHING_PARAMETERS}}
+\end{table}
 
-Assuming the main cluster corresponds to a fully-contained electron, we take its known true energy (from simulation) as a reference and compute the charge--to--energy conversion factor for each $(n_\text{hit})$ threshold. Additionally, to assess the impact of this assumption, with the goal of characterizing signal clusters in the context of background which limits the clustering parameters, one can also investigate a ``cheated charge''. This is computed for all clusters, adding the surrounding charge that has been backtracked to the main electron of the interaction. A calibration based on this cheated clustering gives us an understanding of the losses that arise from a limited clustering ability in the context of background.
+From this matching one can reconstruct the drift coordinate of the \gls{tpc} cluster, which is essential for the correct reconstruction of the neutrino energy. The drift coordinate is computed from the time between the \gls{tpc} vertex and the PDS flash by taking into account the drift velocity of the electrons in the \gls{lar}. \Cref{tab:FLASH_MATCHING_PARAMETERS} shows the clustering and matching parameters for each geometry used for this previous results. Note that the clustering parameters will be held the same for the different background configurations, while the matching parameters can be optimized for each configuration to maximize the matching efficiency.
+
+For any given \gls{tpc} cluster, the matching strategy follows these steps:
+
+\begin{enumerate}
+    \item\textbf{Distance Calculation}: Compute the distance between the \gls{tpc} cluster vertex and all PDS flash positions.
+    
+    \item\textbf{Time Difference Calculation}: Calculate the time difference between the \gls{tpc} cluster and the PDS flash. This must be smaller than the drift time of the electrons in the \gls{lar}.
+    
+    \item\textbf{Candidate Selection Criteria}: A PDS flash is considered adjacent to a \gls{tpc} flash if the distance $(\text{TPC}_\text{y} - \text{PDS}_\text{y})^2 / \text{AdjOpFlashY}^2 + (\text{TPC}_\text{Z} - \text{PDS}_\text{Z})^2 / \text{AdjOpFlashZ}^2$ is smaller than 1, where \( \text{AdjOpFlashY} \) and \( \text{AdjOpFlashZ} \) are the adjusted matching distances in the 2 projected coordinates, respectively. Similarly, in the case of the \gls{vd} geometry matching against membrane flashes, and additional \( \text{AdjOpFlashX} \) parameter is used where the $(\text{TPC}_\text{X} - \text{PDS}_\text{X})^2 / \text{AdjOpFlashX}^2$ term is computed from the time difference between the \gls{tpc} cluster and the \gls{pds} flash.
+    
+    \item\textbf{Matching Criteria}: The algorithm consider 3 additional cuts to prevent the random matching of background cluster:
+    \begin{itemize}
+        \item The minimum number of hits in the PDS flash: \texttt{AdjOpFlashMinNHitCut} (by default 3).
+        \item The maximum ratio of \texttt{AdjOpFlashMaxPE} / \texttt{AdjOpFlashPE}: \texttt{AdjOpFlashMaxPERatioCut} (by default 1). This is intended to prevent the matching of background PDS flashes, which are less homogeneous in the number of \gls{pe}s compared to the signal PDS flashes.
+        \item The minimum \& maximum number of \gls{pe}s \texttt{AdjOpFlashMinPECut} \& \texttt{AdjOpFlashMaxPECut}. This cut is tuned to match the expected light-map of a neutrino production.
+    \end{itemize}
+\end{enumerate}
+
+This algorithm reduces the initial selection of PDS flashes to a set of matching candidates. From this set, only one flash is selected as the match for the \gls{tpc} cluster. To do so, a light-map based parametrization has been implemented by evaluating the expected number of \gls{pe}s in the flash as a function of the distance to cluster's charge and predicted drift distance. Hence, the algorithm picks out the flash candidate that minimizes the following quantity:
 
 \begin{equation}
-    E_{\text{cluster}} = \alpha(n_{\text{hit}}, E_{\text{true}}) \cdot Q_{\text{corr}}.
+    \chi = \frac{\text{abs}(\text{PE}_\text{flash} - \text{PE}_\text{expected})}{\text{PE}_\text{flash}^\alpha}\,,
 \end{equation}
 
-After the truth drift correction has been applied to the data, the charge correction factor is immediately obtained.
+where \( \text{PE}_\text{flash} \) is the number of \gls{pe}s in the flash, \( \text{PE}_\text{expected} \) is the expected number of \gls{pe}s from the light-map parametrization, and \( \alpha \) is a tunable parameter (by default set to 2) that controls the weight of the flash \gls{pe} count in the matching.
 
-\begin{figure}[ht!]
+This parametrization is helpful to investigate which matching strategy works best:
+
+\begin{itemize}
+    \item \textbf{Minimum Error Matching} ($\alpha = 0$): select the flash candidate that minimizes the absolute difference between the number of \gls{pe}s in the flash and the expected number of \gls{pe}s from the light-map.
+    \item \textbf{Minimum Relative Error Matching} ($\alpha = 1$): select the flash candidate that minimizes the relative difference between the number of \gls{pe}s in the flash and the expected number of \gls{pe}s from the light-map.
+    \item \textbf{Weighted Relative Error Matching} ($\alpha = 2$): select the flash candidate that minimizes the weighted relative difference between the number of \gls{pe}s in the flash and the expected number of \gls{pe}s from the light-map.
+    \item \textbf{Maximum \gls{pe} Matching} ($\alpha \to \infty$): select the flash candidate with the highest number of \gls{pe}s.
+\end{itemize}
+
+In the following we detail the implementation of the light-map assisted matching method. This algorithm takes into account the expected light yield distribution for a given signal \gls{tpc} cluster:
+
+\begin{equation}
+    \log_{10} (\text{PE}) = A - A \cdot \lambda \cdot \frac{t}{t_{max}} + C \cdot \left(\frac{t}{t_{max}}\right)^2\,.
+\end{equation}
+
+Where \( A \), \( \lambda \) and \( C \) are amplitude, attenuation, and correction fit parameters; \( t \) is the drift time and \( t_{max} \) is the maximum drift time in the detector. This formula can be used to extract different attenuation curves for different cluster charge ranges that can be fitted to simple quadratic functions in the logarithmic space to parametrize the light-map assisted \gls{pe} cut as a function of both drift time and cluster charge \( Q \):
+
+\begin{align}
+    \text{PE}_\text{cut}(t, Q) &= \exp{A(Q) - A(Q) \cdot \lambda(Q) \cdot \frac{t}{t_{max}} + C(Q) \cdot \left(\frac{t}{t_{max}}\right)^2}\,,\\
+    \text{with } A(Q), &\lambda(Q), C(Q) \text{ fitted with a quadratic function of } Q \nonumber\\
+    \alpha(Q) &= a_0 + a_1 \cdot Q + a_2 \cdot Q^2 \quad \text{where } \alpha \in \{A, \lambda, C\}\,.
+\end{align}
+
+Where \( A(Q) \), \( \lambda(Q) \) and \( C(Q) \) are amplitude, attenuation, and correction fit parameters as a function of the cluster charge \( Q \); \( t \) is the drift time and \( t_{max} \) is the maximum drift time in the detector.
+
+In terms of flash-matching efficiency, we can see in~\cref{tab:MATCHING_COMPARISON} that the \gls{hd} geometry has a better overall performance than the \gls{vd} geometry, which is expected due to the larger drift volume of the latter. The vd\_1x8x14\_3view\_30deg\_nominal configuration has the lower matching efficiency due to the larger drift volume and higher background rate, which increases the probability of miss-matching.
+
+% Add tableNeutrino_Matching_Efficiency_X
+\begin{table}
     \centering
-    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Charge_Correction_Factor.png}
-    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_ElectronCharge_Correction_Factor.png}
-    \caption{Per hit correction factor distributions. (left) Primary cluster charge. (right) Cheated electron cluster charge.\label{fig:CHARGE_CORRECTION_FACTOR}}
-\end{figure}
+    \input{Tables/Neutrino_Matching_Efficiency_X.tex}
+    \caption[width=1\linewidth]{TPC-PDS matching comparison between geometries. Fraction of sample matched to flash.\label{tab:MATCHING_COMPARISON}}
+\end{table}

@@ -1,28 +1,32 @@
-\subsection{Flash Matching\label{sec:FLASH_MATCHING}}
-The first step in the signal reconstruction process is the attempt to match the reconstructed primary \ac{TPC} cluster with its corresponding \ac{PDS} flash. Note that this step is not strictly required for the energy reconstruction, as the drift attenuation correction can be applied statistically. However, the matching is essential for the correct reconstruction of the neutrino position and, most importantly, background fiducialization. This is particularly important for low--energy solar neutrino analyses, where the signal rate is low and the high energy tails of the background spectra can leak into the signal region. The matching is also important for supernova neutrino analyses, where the time structure of the neutrino burst provides valuable information about the supernova dynamics.
+\subsection{\acrshort{tpc} Clustering}\label{sec:CLUSTERING_TPC}
+The clustering of \gls{tpc} hits is performed using a simple algorithm based on the successive scanning of a time-ordered list of hits. The algorithm starts by taking the first hit in the list and grouping it with all hits that are within a certain distance in both channel and time. This process is repeated for each hit until all hits have been processed. The resulting clusters are then filtered based on their total charge, and only those above a certain threshold are kept for further analysis. The clustering scheme is illustrated in~\cref{fig:TPC_CLUSTERING}. The choice of the distance threshold is crucial, as it determines the size and shape of the clusters. A smaller threshold will result in more, smaller clusters, while a larger threshold will produce fewer, larger clusters. The optimal threshold is determined based on the expected signal characteristics and the background conditions of the detector. In this work, we found that a threshold of 3 adjacent channels and a time window of \SI{12.5}{\micro\second} (25 tick) provides a good balance between cluster completeness and purity in the context of background. The resulting clusters contain the weighted average time and wire-position, as well as the total charge, which are used for subsequent reconstruction stages.
 
-The matching is performed by evaluating the distance between the \ac{TPC} vertex and the PDS flash position, as well as the time difference between the \ac{TPC} cluster and the PDS flash. The matching efficiency is defined as the fraction of \ac{TPC} clusters that have a corresponding pure PDS flash. \cref{fig:FLASH_MATCHING} shows the flash--matching efficiency as a function of the distance to the PDS plane and the neutrino energy. The matching efficiency is high for distances up to \SI{1}{\meter} and decreases for larger distances. The matching efficiency is also higher for higher neutrino energies. This is expected, as the PDS flashes are more likely to be detected for higher energy depositions.
-
-\begin{figure}[ht]
+\begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_lateralAPA_marley_official_TPC_Cluster_Efficiency_Scan.png}
-    \caption[width=1\linewidth]{Flash--matching efficiency. (left) As a function of distance to the PDS plane. (right) As a function of neutrino energy.\label{fig:FLASH_MATCHING}}
+    \includegraphics[width=0.8\linewidth]{Images/TPC_CLUSTERING_SCHEME.png}
+    \caption{TPC Clustering scheme based on the successive scanning of a time-ordered \texttt{hits} (represented as black squares). The dashed circles represent the "adjacency" region for each hit. Colors are used to represent \texttt{hits} that have been grouped together. For simplicity, unitary distance in channel (ID) and time (ticks) are shown to be equivalent.\label{fig:TPC_CLUSTERING}}
 \end{figure}
 
-For any given \ac{TPC} cluster, the matching strategy follows these steps:
+\Cref{fig:TPC_CLUSTERING} shows an example of the clustering process for a simulated neutrino interaction in the \gls{hd} geometry. The hits are represented as black squares, and the dashed circles indicate the adjacency region for each hit. The colors represent the hits that have been grouped together into clusters. The resulting clusters contain the weighted average time and wire-position, as well as the total charge, which are used for subsequent reconstruction stages.
 
-\begin{enumerate}
-    \item\textbf{Distance Calculation}: Compute the distance between the \ac{TPC} cluster vertex and all PDS flash positions.
-    \item\textbf{Time Difference Calculation}: Calculate the time difference between the \ac{TPC} cluster and the PDS flash. This must be smaller than the drift time of the electrons in the LAr.
-    \item\textbf{Candidate Selection Criteria}: A PDS flash is considered adjacent to a \ac{TPC} flash if the distance $(\text{TPC}_\text{y} - \text{PDS}_\text{y})^2 / \text{AdjOpFlashY}^2 + (\text{TPC}_\text{Z} - \text{PDS}_\text{Z})^2 / \text{AdjOpFlashZ}$ is smaller than 1, where \( \text{AdjOpFlashY} \) and \( \text{AdjOpFlashZ} \) are the adjusted matching distances in the 2 projected coordinates, respectively.
-    \item\textbf{Matching Criteria}: The algorithm consider 3 additional cuts to prevent the random matching of background cluster:
-    \begin{itemize}
-        \item The minimum number of hits in the PDS flash: AdjOpFlashMinNHitCut (by default 3).
-        \item The minimum number of PEs in the PDS flash: AdjOpFlashMinPECut (by default 20).
-        \item The maximum ratio of AdjOpFlashMaxPE / AdjOpFlashPE: AdjOpFlashMaxPERatioCut (by default 1). This is intended to prevent the matching of background PDS flashes, wich are less homogeneous in the number of PEs compared to the signal PDS flashes.
-    \end{itemize}
-\end{enumerate}
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Images/Schematics/ADJ_CLUSTER_FINDING_SCHEME.png}
+    \caption{Adjacent cluster finding scheme. The size of the clusters represents their total charge. The dashed circle represents the \SI{1}{\meter} radial distance used to find adjacent clusters around the primary cluster. Once found, these clusters are grouped together with the primary cluster to form a low-energy event. Clusters cannot be considered adjacent to more than one primary cluster.\label{fig:ADJ_CLUSTER_FINDING}}
+\end{figure}
 
-Select the PDS flash with the highest number of PE as the matching candidate for the \ac{TPC} cluster. If no PDS flash is found within the matching criteria, the \ac{TPC} cluster is considered unmatched.
+Clusters are associated to others based on their relative charges and radial distance. For the radial distance comparison between clusters, the difference in their arrival times is converted to the missing spacial coordinate by taking into account the known drift velocity in \gls{lar}. Notice that this computation only holds true for correlated energy deposits (e.g. nuclear de-excitation gammas from a \gls{cc} neutrino interaction in \gls{lar} following the emission of a main electron). In the case of non-correlated background events occurring throughout the full detector volume, their distance along the drift coordinate with respect to other clusters cannot be truthfully determined. From a reconstruction point of view, this leads to the presence of a constant background floor in the vicinity of any signal cluster that corresponds to the projected activity in the interacting drift volume (see \cref{tab:ADJCLUSTERNUM_RADIAL_20,tab:ADJCLUSTERNUM_RADIAL_100}). These clusters are divided into:
 
-From this matching one can reconstruct the drift coordinate of the \ac{TPC} cluster, which is essential for the correct reconstruction of the neutrino energy. The drift coordinate is computed from the time between the \ac{TPC} vertex and the PDS flash by taking into account the drift velocity of the electrons in the \ac{LAr}.
+\begin{itemize}
+    \item \textbf{Primary}. Clusters with charge bigger than any other's cluster charge up to \SI{1}{\meter} radial distance. In physics studies, such as the solar neutrino analysis, these clusters can be both signal (from neutrino interactions) or background (neutrino event candidates). Here we will focus only on primary clusters from neutrino interactions, but the calibration and reconstruction techniques described here are equally applicable to background-induced primary clusters.
+    \item \textbf{Adjacent}. Clusters with charge smaller than the one of a primary cluster closer than \SI{1}{\meter} radial distance.
+\end{itemize}
+
+Depending on the particle producing the energy deposition, adjacent clusters can be further divided into three categories based on their origin. In the following we will distinguish between three types of adjacent clusters:
+
+\begin{itemize}
+    \item \textbf{Signal}. These are clusters produced by secondary gammas emitted in the de-excitation of the final state nucleus after the neutrino interaction. These clusters are correlated in time and space with the primary cluster.
+    \item \textbf{Intrinsic Background}. These are clusters produced by background sources that are intrinsic to the \gls{lar} or detector materials. These clusters are uncorrelated in time and space with respect to the primary cluster, but their rate is uniform throughout the detector volume and does not depend on the forementioned background scenarios for each of the geometries.
+    \item \textbf{External Background}. These are clusters produced by background sources that originate outside the detector active volume (e.g. gammas from the cavern walls, neutrons from the surrounding rock, etc.). These clusters are equally uncorrelated in time and space with respect to the primary cluster and their rate depends on the background scenario for each of the geometries.
+\end{itemize}
+

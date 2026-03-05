@@ -1,0 +1,41 @@
+\subsection{Electron Energy Resolution}\label{sec:ELECTRON_ENERGY_RESOLUTION}
+As a figure of merit for the process, we can compute the energy resolution from the calibrated energy of the main electron. To remove any reconstruction artifacts, this first result uses: 
+
+\begin{itemize}
+    \item \textbf{Ideal Clustering}. This means that all the hits associated with the electron are perfectly clustered together, and no hits from other particles are included. This is done using truth information to select the hits.
+    \item \textbf{High Hit Threshold}. A minimum of 3 hits is required to form a cluster. This helps to reduce noise and ensures that only significant energy depositions are considered.
+    \item \textbf{True Drift Correction}. The drift correction is applied using the true position of the interaction, rather than relying on reconstructed positions. This eliminates any errors that might arise from inaccuracies in the reconstruction process.- Three scenarios are considered: \textbf{True} drift correction, \textbf{Reco} drift correction (using flash-matching), and \textbf{Mean} drift correction (using the average drift time for the detector).
+\end{itemize}
+
+This is typically the value that gets compute when estimating the energy resolution of a \gls{tpc}. It is obtained for an idealized clustering with ad hoc calorimetry and a high hit threshold (in this case we use 3 for a typical track). The energy resolution is computed as the \gls{rms} of the relative error of the reconstructed variable versus the truth. The results are shown in \cref{fig:RMS}. The formula for the energy resolution fit is:
+
+%residuals = np.sqrt(np.power(p2, 2) + np.power(p1 / np.sqrt(x - b), 2) + np.power(p0 / (x - b), 2))
+\begin{equation}
+    \Omega_{(E_\text{true})} = \sqrt{\left(\frac{p_2}{\sqrt{E_{\text{true}} - b}}\right)^2 + \left(\frac{p_1}{E_{\text{true}} - b}\right)^2 + p_0^2},
+\end{equation}
+
+\noindent where \( p_0 \), \( p_1 \), and \( p_2 \) are the parameters of the fit, and \( b \) is a constant offset and corresponds to the detection threshold. These parameters can be interpreted as the intrinsic resolution evaluated to \num{11(1)}\%, the stochastic term, and the noise term, respectively. This formula con be derived from the standard parameterization of energy resolution in calorimetry, which typically includes contributions from stochastic processes, electronic noise, and constant terms.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralapa_marley_official_cheatedenergy_electron_calibration_nhits3_hist2d.png}
+    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralapa_marley_official_idealclustering_truedrift_3nhits_fit.png}
+    \caption[width=1\linewidth]{Energy resolution from calibrated charge with ideal clustering, true drift correction and hit threshold of 3. (Left) Heatmap of the reconstructed energies. (Right) Per bin resolution of the data.\label{fig:ELECTRON_RMS}}
+\end{figure}
+
+To assess the impact of the different reconstruction stages on the energy resolution, we can vary one parameter at a time while keeping the others fixed. The results are shown in \cref{fig:ELECTRON_RMS_COMAPRISON}.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/marley_official_electron_energy_resolution_clusteringreco_drifttrue_nhits3.png}
+    \includegraphics[width=.49\linewidth]{Images/marley_official_electron_energy_resolution_clusteringideal_driftnone_nhits3.png}
+    \includegraphics[width=.49\linewidth]{Images/marley_official_electron_energy_resolution_clusteringideal_drifttrue_nhits1.png}
+    \includegraphics[width=.49\linewidth]{Images/marley_official_electron_energy_resolution_clusteringreco_driftreco_nhits1.png}
+    \caption[width=1\linewidth]{Effect of clustering (ideal vs reconstructed), drift correction (ideal vs reconstructed vs none), and hit threshold on the electron energy resolution. (Top Left) Shows the effect of non-ideal clustering. (Top Right) Shows the effect of not applying a drift correction. (Bottom Left) Shows the effect of lower hit threshold. (Bottom Right) Shows the final and complete electron energy resolution with reconstructed clustering and drift correction, as well as the lowest possible hit threshold.\label{fig:ELECTRON_RMS_COMAPRISON}}
+\end{figure}
+
+As can be seen, the clustering has a significant impact on the energy resolution, especially with increasing energies. This is expected, as the clustering algorithm may not be able to perfectly reconstruct the electron, leading to a loss of energy.
+
+The hit threshold also has an impact on the energy resolution, but it is less significant than the clustering. A higher hit threshold leads to a better energy resolution, as it selects electrons with higher completeness.
+
+Finally, the drift correction has a small but noticeable impact on the energy resolution. Using the true drift correction leads to a better energy resolution although the reconstructed drift correction (using flash-matching) performs almost equivalently. The mean drift correction, on the other hand, leads to a degradation that is especially significant for the \gls{vd} geometry. This is expected, as the mean drift error will be larger for larger detectors, leading to a larger uncertainty in the energy reconstruction.

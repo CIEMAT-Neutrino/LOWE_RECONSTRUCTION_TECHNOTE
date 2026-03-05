@@ -1,5 +1,10 @@
-% !TEX root = ~/Code/TN_LOWE_RECONSTRUCTION/main.tex
-\documentclass[a4paper]{article}  % Default LaTeX article class
+% !TEX root = main.tex
+\documentclass[a4paper, 12pt]{article}  % Default LaTeX article class
+
+% Paragraph formatting
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{1em}
+
 \usepackage[a4paper, margin=0.75in]{geometry} % Set page size and margins
 \usepackage[english]{babel}       % Add babel package for language support
 \usepackage[numbers]{natbib}      % For bibliography management
@@ -10,25 +15,73 @@
 \usepackage{amsfonts}             % For additional math fonts
 \usepackage{amssymb}              % For additional math symbols
 \usepackage{xcolor}               % For color support
+\definecolor{orange}{RGB}{255,127,0} % Define orange color
+
 \usepackage{csvsimple}            % For including CSV files
 \usepackage{booktabs}             % For better table formatting
 \usepackage{hyperref}             % For hyperlinks in the document
+
 \hypersetup{
-    colorlinks = true,
-    linkbordercolor = {white},
-    linkcolor = {teal},
-    urlcolor = {blue},
-    citecolor = {teal},
+colorlinks = true,
+linkbordercolor = {white},
+linkcolor = {teal},
+urlcolor = {teal},
+citecolor = {teal},
 }
+
 \usepackage{geometry}             % For setting page dimensions
 \usepackage{siunitx}
 % Add year as unit in the siunitx package
 \DeclareSIUnit \photoelectron {PE}
 \DeclareSIUnit \photon {photon}
 \DeclareSIUnit \electron {e-}
+\DeclareSIUnit \metersofwater {m.w.e.}
+\DeclareSIUnit \year {yr}
+
 \usepackage{cleveref}
 \usepackage{subcaption}
-\usepackage[nohyperlinks,printonlyused]{acronym}
+\usepackage{multirow}
+\usepackage[acronym]{glossaries} % Add this line to the package imports
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, decorations.pathmorphing, calc}
+
+\makenoidxglossaries % Add this line in the preamble
+\newglossaryentry{decay0}{name={Decay0}, description={is a program written in the early 90's by Volodymyr Tretyak and collaborators, using the Fortran 77 programming language and the CERNLIB library. It has been maintained and improved up to 2020. Later, a pure C++ version was released without any dependency on Fortran and CERNLIB. This code was integrated in 2011 as the genbb\_help module of the Bayeux C++ library (version < 4). BxDecay0 is a standalone library with very few dependencies (mostly the GSL library for numerical integration and a few special math functions). External random engines can be used through a simple wrapping functor interface, particularly the ones provided by the C++ standard random library can be used by default. However the user is free to provide its own uniform deviates random generator (based on GSL, ROOT or whatever).}}
+
+\newglossaryentry{marley}{name={MARLEY}, description={(Model of Argon Reaction Low Energy Yields) is a neutrino event generator designed to simulate low-energy neutrino interactions with argon nuclei. It is developed by the Low-Energy Neutrino group of the DUNE collaboration. MARLEY focuses on simulating interactions relevant to solar and supernova neutrinos in liquid argon detectors, providing detailed modeling of the nuclear physics involved in these interactions. It incorporates a gamma-decay scheme to describe the de-excitation of the residual nucleus after a neutrino interaction, which is crucial for accurately simulating the resulting signals in the detector. MARLEY is implemented in C++ and is designed to be integrated with the LArSoft framework used by the DUNE collaboration for detector simulation and event reconstruction.}}
+
+\newacronym{apa}{APA}{Anode Plane Assembly}
+\newacronym{cc}{CC}{Charged Current}
+\newacronym{cpa}{CPA}{Cathode Plane Assembly}
+\newacronym{crp}{CRP}{Charge Readout Plane}
+\newacronym{daq}{DAQ}{Data Acquisition}
+\newacronym{detsim}{DetSim}{Detector Simulation}
+\newacronym{dune}{DUNE}{Deep Underground Neutrino Experiment}
+\newacronym{es}{ES}{Elastic Scattering}
+\newacronym{fd}{FD}{Far Detector}
+\newacronym{fermilab}{Fermilab}{Fermi National Accelerator Laboratory}
+\newacronym{geant4}{Geant4}{Geometry and Tracking v.4}
+\newacronym{hd}{HD}{Horizontal-Drift}
+\newacronym{lar}{LAr}{Liquid Argon}
+\newacronym{larsoft}{LArSoft}{Liquid Argon Software Framework}
+\newacronym{lartpc}{LArTPC}{Liquid Argon Time Projection Chamber}
+\newacronym{mc}{MC}{Monte Carlo}
+\newacronym{mip}{MIP}{Minimum Ionizing Particle}
+\newacronym{ml}{ML}{Machine Learning}
+\newacronym{nc}{NC}{Neutral Current}
+\newacronym{pcb}{PCB}{Printed Circuit Board}
+\newacronym{pd}{PD}{Photon Detector}
+\newacronym{pde}{PDE}{Photon Detection Efficiency}
+\newacronym{pds}{PDS}{Photon Detection System}
+\newacronym{pe}{PE}{Photoelectron}
+\newacronym{rms}{RMS}{Root Mean Square}
+\newacronym{sipm}{SiPM}{Silicon Photomultiplier}
+\newacronym{surf}{SURF}{Sanford Underground Research Facility}
+\newacronym{pmt}{PMT}{Photomultiplier Tube}
+\newacronym{roi}{ROI}{Region Of Interest}
+\newacronym{tpc}{TPC}{Time Projection Chamber}
+\newacronym{vd}{VD}{Vertical-Drift}
+\newacronym{xa}{XA}{X-ARAPUCA}
 
 \begin{document}
 \selectlanguage{english}          % Sets the language of the document.
@@ -38,51 +91,26 @@
 \input{1.Introduction/1Introduction}
 \input{2.Simulation/2Simulation}
 \input{3.Reconstruction/3Reconstruction}
-\input{4.Results/4Results}
-\input{5.Conclusion/5Conclusion}
+\input{4.Calibration/4Calibration}
+\input{5.Results/5Results}
+\input{6.Conclusion/6Conclusion}
 \clearpage                    % Sometimes you want the rest on separate pages.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Bibliography
-%--------------------
+%----------
 \bibliographystyle{ieeetr}  % Use IEEEtran bibliography style
 \bibliography{bibliography} % Use natbib command
 \clearpage                  % Sometimes it is useful to have bibliography on separate page.
 
 % Acronyms
-%--------------------
-\section*{List of Acronyms}
-\begin{acronym}
-    \acro{APA}{Anode Plane Assembly}
-    \acro{CC}{Charged Current}
-    \acro{CPA}{Cathode Plane Assembly}
-    \acro{CRP}{Charge Readout Plane}
-    \acro{DUNE}{Deep Underground Neutrino Experiment}
-    \acro{ES}{Elastic Scattering}
-    \acro{FD}{Far Detector}
-    \acro{HD}{Horizontal--Drift}
-    \acro{LAr}{Liquid Argon}
-    \acro{LArSoft}{Liquid Argon Software Framework}
-    \acro{LArTPC}{Liquid Argon Time Projection Chamber}
-    \acro{MARLEY}{Model of Argon Reaction Low Energy Yields}
-    \acro{MC}{Monte Carlo}
-    \acro{ML}{Machine Learning}
-    \acro{NC}{Neutral Current}
-    \acro{PCB}{Printed Circuit Board}
-    \acro{PDS}{Photon Detection System}
-    \acro{PE}{Photoelectron}
-    \acro{RMS}{Root Mean Square}
-    \acro{SiPM}{Silicon Photomultiplier}
-    \acro{SURF}{Sanford Underground Research Facility}
-    \acro{PMT}{Photomultiplier Tube}
-    \acro{TPC}{Time Projection Chamber}
-    \acro{VD}{Vertical--Drift}
-    \acro{XA}{X--ARAPUCA}
-\end{acronym}
+%----------
+\printnoidxglossary[type=\acronymtype] % Add this line where you want to print the acronyms
+\printnoidxglossary % Add this line where you want to print the glossary
 
 % Appendix
-%--------------------
+%----------
 \clearpage                % Sometimes it is useful to have bibliography on separate page.
 \onecolumn                % If you want 1 column for appendix.
 \input{Appendix/Appendix}     % Comment out to exclude appendix
