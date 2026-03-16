@@ -2,18 +2,18 @@
 Even after lifetime and charge calibration, small systematic biases may remain in the reconstructed electron energy due to recombination modelling, imperfect response, or clustering inefficiencies. We apply a linear correction to account for this residual offset:
 
 \begin{equation}
-    E_{e}^{\text{final}} = \left(E_{\text{cluster}} - n\right) / m,
+E^\text{reco}_{e} = a \cdot E^\text{true}_{e} + b\,.\label{eq:ELECTRON_CALIBRATION}
 \end{equation}
 
-where \( m \) and \( n \) are derived from the linear fits to the simulated \( E_{\text{true}} \) versus \( E_{\text{reco}} \) distributions as shown in \cref{fig:CHARGE_CALIBRATION}. The calibration is performed separately for the main electron cluster and the cheated electron cluster. The calibration factor is computed as a function of the number of hits in the cluster (see~\cref{fig:ENERGY_CALIBRATION}), which serves as a proxy for the electron energy.
+where \( a \) and \( b \) are derived from the linear fits to the simulated \( E_{\text{true}} \) versus \( E_{\text{reco}} \) distributions as shown in \cref{fig:CHARGE_CALIBRATION}.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_primaryenergy_electron_calibration_calibrated_nhits2_hist2d.png}
+    \includegraphics[width=\linewidth]{Images/Reco/primaryenergy_electron_calibration_hd_1x2x6_centralapa_marley_official_trueenergy_rawenergy_calibrated_threshold_3_logz_hist2d.png}
     \caption[width=1\linewidth]{Charge calibration for the main electron clusters. (left) Comparison between true and reconstructed energy before linear fit calibration. (right) Comparison between true and reconstructed energy after linear fit calibration. Dashed line shows the values for which $E_\text{reco} = E_\text{true}$ as reference.\label{fig:CHARGE_CALIBRATION}}
 \end{figure}
 
-As shown in \cref{fig:CHARGE_CALIBRATION_PARAMETERS}, the calibrated parameters approach unity for \( m \) and continuously rise for \( n \) as the number of hits increases, indicating worse electron clustering for higher--energy particles. There is no significant difference between the \gls{hd} and \gls{vd} geometries in terms of these calibration parameters.
+The calibration is performed separately for the main electron cluster and the cheated electron cluster. The calibration factor is computed as a function of the number of hits in the cluster, which serves as a proxy for the electron energy.
 
 \begin{figure}[ht!]
     \centering
@@ -21,3 +21,5 @@ As shown in \cref{fig:CHARGE_CALIBRATION_PARAMETERS}, the calibrated parameters 
     \includegraphics[width=0.49\linewidth]{Images/vd_1x8x14_3view_30deg_marley_official_variable_scan.png}
     \caption[width=1\linewidth]{Calibration parameters as a function of number of hits in the cluster for (left) \gls{hd} and (right) \gls{vd}.\label{fig:CHARGE_CALIBRATION_PARAMETERS}}
 \end{figure}
+
+As shown in \cref{fig:CHARGE_CALIBRATION_PARAMETERS}, the calibrated parameters approach unity for \( a \) and continuously rise for \( b \) as the number of hits increases, indicating worse electron clustering for higher--energy particles. There is no significant difference between the \gls{hd} and \gls{vd} geometries in terms of these calibration parameters.

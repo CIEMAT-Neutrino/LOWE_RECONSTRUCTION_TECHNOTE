@@ -1,14 +1,16 @@
-\subsection{Neutrino Energy Smearing\label{sec:SIGNAL_SMEARING}}
+\subsection{Neutrino Energy Calibration\label{sec:SIGNAL_SMEARING}}
 Due to the missing nuclear binding energy and undetected soft particles, the reconstructed neutrino energy is expected to systematically underestimate the true value. As a final step to the reconstruction process, all energies (\textbf{TotalEnergy}, \textbf{SelectedEnergy}, \textbf{SolarEnergy} and \textbf{ClusterEnergy}) are calibrated with a linear fit to compensate for systematic losses in the previous clustering or calibration processes. This final global correction is applied to bring the distribution into agreement with the simulation truth:
 
 \begin{equation}
-    E_{\nu}^{\text{cal}} = \left(E_{\nu}^{\text{raw}} - n\right) / m,
+    E^\text{reco}_{\nu} = a \cdot E^\text{true}_{\nu} + b\,.\label{eq:NEUTRINO_CALIBRATION}
 \end{equation}
 
-with \( m \) and \( n \) obtained from a linear fit to the true versus reconstructed neutrino energy spectrum of the \gls{mc} sample as shown in \cref{fig:NEUTRINO_ENERGY_SMEARING}.
+with \( a \) and \( b \) obtained from a linear fit to the true versus reconstructed neutrino energy spectrum of the \gls{mc} sample as shown in \cref{fig:NEUTRINO_ENERGY_SMEARING}.
 
-\begin{figure}[ht]
+\begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_neutrino_energy_variable_hist2d.png}
-    \caption[width=1\linewidth]{Neutrino energy smearing from the calibrated signal.\label{fig:NEUTRINO_ENERGY_SMEARING}}
+    \includegraphics[width=\linewidth]{Images/Reco/neutrino_energy_hd_1x2x6_centralapa_marley_official_trueenergy_recoenergy_calibrated_variable_selectedenergy_logz_hist2d.png}
+    \caption[width=1\linewidth]{\gls{hd} Neutrino energy smearing from the calibrated \emph{SelectedEnergy} signal.\label{fig:NEUTRINO_ENERGY_SMEARING}}
 \end{figure}
+
+\Cref{fig:NEUTRINO_ENERGY_SMEARING} shows the neutrino energy smearing for the \emph{SelectedEnergy} algorithm after the final linear calibration. The distribution is centered around the diagonal, indicating that the reconstructed energy is in good agreement with the true energy. The width of the distribution gives an indication of the energy resolution of the reconstruction algorithm, which will be further discussed in \cref{sec:ENERGY_RESOLUTION}.

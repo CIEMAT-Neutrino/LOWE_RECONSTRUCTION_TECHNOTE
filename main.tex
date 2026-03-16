@@ -36,6 +36,8 @@ citecolor = {teal},
 \DeclareSIUnit \photon {photon}
 \DeclareSIUnit \electron {e-}
 \DeclareSIUnit \metersofwater {m.w.e.}
+\DeclareSIUnit \tick {tick}
+\DeclareSIUnit \ADC {ADC}
 \DeclareSIUnit \year {yr}
 
 \usepackage{cleveref}
@@ -46,6 +48,20 @@ citecolor = {teal},
 \usetikzlibrary{arrows.meta, positioning, decorations.pathmorphing, calc}
 
 \makenoidxglossaries % Add this line in the preamble
+\newglossaryentry{wirecell}{name={WireCell}, description={is a software package developed to simulate the response of liquid argon time projection chambers (LArTPCs). It provides tools for modeling the ionization processes in liquid argon, as well as the electronics response of the detector. WireCell is designed to be used in conjunction with the LArSoft framework for simulating and reconstructing events in LArTPC detectors~\cite{wirecell}.}}
+
+\newglossaryentry{larql}{name={LArQL}, description={is a software package developed to simulate the response of liquid argon time projection chambers (LArTPCs). It provides tools for modeling the scintillation processes in liquid argon. LArQL is designed to be used in conjunction with the LArSoft framework for simulating and reconstructing events in LArTPC detectors~\cite{larql}.}}
+
+\newglossaryentry{dune}{name={DUNE}, description={(Deep Underground Neutrino Experiment) is a next-generation neutrino experiment designed to study neutrino oscillations, proton decay, and supernova neutrinos. It will consist of a far detector located deep underground at the Sanford Underground Research Facility (SURF) in South Dakota, and a near detector located at Fermilab in Illinois. DUNE aims to provide insights into the fundamental properties of neutrinos and their role in the universe.}}
+
+\newglossaryentry{microboone}{name={MicroBooNE}, description={is a neutrino experiment located at Fermilab in Illinois. It is designed to study neutrino interactions using a liquid argon time projection chamber (LArTPC) detector. MicroBooNE is part of the Short-Baseline Neutrino (SBN) program, which aims to investigate the nature of neutrino oscillations and search for sterile neutrinos. The experiment has been operational since 2015 and has provided valuable data on neutrino interactions in liquid argon.}}
+
+\newglossaryentry{protodune-sp}{name={ProtoDUNE-SP}, description={is a prototype detector for the DUNE experiment, located at CERN in Switzerland. It is a single-phase liquid argon time projection chamber (LArTPC) designed to test and validate the technologies and techniques that will be used in the DUNE far detector. ProtoDUNE-SP has been operational since 2018 and has provided valuable data on the performance of LArTPC technology, as well as insights into neutrino interactions in liquid argon.}}
+
+\newglossaryentry{hd}{name={HD}, description={(Horizontal-Drift) is a design for a liquid argon time projection chamber (LArTPC) where the electric field is oriented horizontally. In this design, the anode plane assemblies (APAs) are arranged vertically, and the cathode plane assemblies (CPAs) are placed horizontally. This configuration allows for a shorter drift distance, which can lead to improved charge collection and better spatial resolution. The HD design is one of the two geometries planned for the DUNE far detector modules.}}
+
+\newglossaryentry{vd}{name={VD}, description={(Vertical-Drift) is a design for a liquid argon time projection chamber (LArTPC) where the electric field is oriented vertically. In this design, the anode plane assemblies (APAs) are arranged horizontally, and the cathode plane assemblies (CPAs) are placed vertically. This configuration allows for a longer drift distance, which can lead to improved energy resolution and better background rejection. The VD design is one of the two geometries planned for the DUNE far detector modules.}}
+
 \newglossaryentry{decay0}{name={Decay0}, description={is a program written in the early 90's by Volodymyr Tretyak and collaborators, using the Fortran 77 programming language and the CERNLIB library. It has been maintained and improved up to 2020. Later, a pure C++ version was released without any dependency on Fortran and CERNLIB. This code was integrated in 2011 as the genbb\_help module of the Bayeux C++ library (version < 4). BxDecay0 is a standalone library with very few dependencies (mostly the GSL library for numerical integration and a few special math functions). External random engines can be used through a simple wrapping functor interface, particularly the ones provided by the C++ standard random library can be used by default. However the user is free to provide its own uniform deviates random generator (based on GSL, ROOT or whatever).}}
 
 \newglossaryentry{marley}{name={MARLEY}, description={(Model of Argon Reaction Low Energy Yields) is a neutrino event generator designed to simulate low-energy neutrino interactions with argon nuclei. It is developed by the Low-Energy Neutrino group of the DUNE collaboration. MARLEY focuses on simulating interactions relevant to solar and supernova neutrinos in liquid argon detectors, providing detailed modeling of the nuclear physics involved in these interactions. It incorporates a gamma-decay scheme to describe the de-excitation of the residual nucleus after a neutrino interaction, which is crucial for accurately simulating the resulting signals in the detector. MARLEY is implemented in C++ and is designed to be integrated with the LArSoft framework used by the DUNE collaboration for detector simulation and event reconstruction.}}
@@ -56,12 +72,11 @@ citecolor = {teal},
 \newacronym{crp}{CRP}{Charge Readout Plane}
 \newacronym{daq}{DAQ}{Data Acquisition}
 \newacronym{detsim}{DetSim}{Detector Simulation}
-\newacronym{dune}{DUNE}{Deep Underground Neutrino Experiment}
 \newacronym{es}{ES}{Elastic Scattering}
 \newacronym{fd}{FD}{Far Detector}
 \newacronym{fermilab}{Fermilab}{Fermi National Accelerator Laboratory}
 \newacronym{geant4}{Geant4}{Geometry and Tracking v.4}
-\newacronym{hd}{HD}{Horizontal-Drift}
+% \newacronym{hd}{HD}{Horizontal-Drift}
 \newacronym{lar}{LAr}{Liquid Argon}
 \newacronym{larsoft}{LArSoft}{Liquid Argon Software Framework}
 \newacronym{lartpc}{LArTPC}{Liquid Argon Time Projection Chamber}
@@ -80,7 +95,8 @@ citecolor = {teal},
 \newacronym{pmt}{PMT}{Photomultiplier Tube}
 \newacronym{roi}{ROI}{Region Of Interest}
 \newacronym{tpc}{TPC}{Time Projection Chamber}
-\newacronym{vd}{VD}{Vertical-Drift}
+\newacronym{vuv}{VUV}{Vacuum Ultraviolet}
+% \newacronym{vd}{VD}{Vertical-Drift}
 \newacronym{xa}{XA}{X-ARAPUCA}
 
 \begin{document}

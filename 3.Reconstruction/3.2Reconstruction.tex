@@ -1,5 +1,5 @@
 \subsection{\acrshort{pds} Clustering}\label{sec:CLUSTERING_PDS}
-Similarly to the \gls{tpc} clustering, the \gls{pds} signals are also clustered in order to reconstruct the flashes. The flash finding scheme is illustrated in~\cref{fig:FLASH_FINDING}. The algorithm takes into account the time and channel proximity of the \texttt{ophits} to cluster them into flashes. Each flash is then assigned a vertex and a time, which are used for the flash-matching with the \gls{tpc} clusters. The clustering is performed independently for each \gls{pds} plane in the \gls{vd} geometry, while in the \gls{hd} geometry all \texttt{ophits} are clustered together as there is only one \gls{pds} plane. The resulting flash contains information about the total number of \gls{pe}s, the weighted average time of the flash, and the flash vertex (computed as the weighted average position of all \gls{xa} channels). The choice of the time and channel proximity thresholds is crucial, as it determines the size and purity of the flashes. A smaller threshold will result in more, smaller flashes, while a larger threshold will produce fewer, larger flashes. The optimal thresholds are determined based on the expected signal characteristics and the background conditions of the detector. In this work, we found that a time window of \SI{100}{\micro\second} and a radial distance of \SI{1}{\meter} provides a good balance between flash completeness and purity in the context of background. The resulting flashes are then used for the flash-matching with the \gls{tpc} clusters, which is described in the next section.
+Similarly to the \gls{tpc} clustering, the \gls{pds} signals are also clustered in order to reconstruct the flashes. The flash finding scheme is illustrated in~\cref{fig:FLASH_FINDING}. The algorithm takes into account the time and channel proximity of the \texttt{ophits} to cluster them into flashes. Each flash is then assigned a vertex and a time, which are used for the flash-matching with the \gls{tpc} clusters. The resulting flash contains information about the total number of \gls{pe}s, the weighted average time of the flash, and the flash vertex (computed as the weighted average position of all \gls{xa} channels). The choice of the time and channel proximity thresholds is crucial, as it determines the size and purity of the flashes. A smaller threshold will result in more, smaller flashes, while a larger threshold will produce fewer, larger flashes. The optimal thresholds are determined based on the expected signal characteristics and the background conditions of the detector.
 
 \begin{figure}[ht!]
     \centering
@@ -7,9 +7,32 @@ Similarly to the \gls{tpc} clustering, the \gls{pds} signals are also clustered 
     \caption{Flash finding scheme. Optical channels (\gls{xa}s) are represented as black squares. The darkness of their filling represents the number of \gls{pe}s detected per \texttt{hit}. The color represents the \texttt{ophit}'s precedence: signal (red) and background (blue). The dashed circle shows the \texttt{ophits} grouped into a single flash. Notice how the algorithm allows for the same \texttt{ophit} to be part of more than one flash.\label{fig:FLASH_FINDING}}
 \end{figure}
 
+In the case of the \gls{vd}, the clustering is performed independently for each \gls{pds} plane. In this work, we found that a time window of \SI{100}{\micro\second} and a radial distance of \SI{1}{\meter} provides a good balance between flash completeness and purity in the context of background. The parameters used for the flash finding are shown in~\cref{tab:FLASH_FINDING_PARAMETERS}. Note that these parameters will be held the same for the different background configurations, while the matching parameters can be optimized for each configuration to maximize the matching efficiency.
+
+\begin{table}[ht!]
+    \centering
+    \input{Tables/Flash_Finding_Parameters.tex}
+    \caption{Flash-finding parameters for \gls{hd} and \gls{vd} geometries.\label{tab:FLASH_FINDING_PARAMETERS}}
+\end{table}
+
 The flashes are produced from \texttt{ophits} by clustering these \gls{pds} signals in time and channel proximity. All \texttt{ophits} within a given time window (\texttt{OpFlashAlgoMinTime} - \texttt{OpFlashAlgoMaxTime}) and distance (\texttt{OpFlashAlgoRad}) are grouped together around a single trigger \texttt{ophit}, which is defined to be the one with the highest number of \gls{pe}s. The clustering is performed independently for each \gls{pds} plane in the \gls{vd} detector. The resulting flash contains information about the total number of \gls{pe}s, the weighted average time of the flash, and the flash vertex(computed as the weighted average position of all \gls{xa} channels).
 
-Once the set of flashes is formed, the matching is performed by evaluating the distance between the \gls{tpc} vertex and the \gls{pds} flash, as well as their time difference. Flashes can be formed from signal or background activity. For any given flash, there is a non--negligible chance clustering pileup (where \texttt{ophits} formed from background activity get clustered into flashes where the trigger \texttt{ophit} originates from signal) or channel pileup (where \texttt{ophits} themselves are formed from a mixture of simultaneously arriving signal and background photons) occur. Therefore, we distinguish between:
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/Reco/tpc_cluster_efficiency_drift_scan_hd_1x2x6_marley_official_coordinate_efficiency_x_energy_scan.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/tpc_cluster_efficiency_drift_scan_vd_1x8x14_3view_30deg_marley_official_coordinate_efficiency_x_energy_scan.png}
+    \caption[width=1\linewidth]{Flash-Finding efficiency for the \gls{hd} (left) and \gls{vd} (right) geometries. Results are shown as a function of distance to the \gls{pds} plane and true neutrino energy.\label{fig:FLASH_FINDING_COMPARISON}}
+\end{figure}
+
+\Cref{fig:FLASH_FINDING_COMPARISON} shows the flash-finding efficiency for the \gls{hd} and \gls{vd} geometries as a function of the distance to the \gls{pds} plane and the true neutrino energy. The flash-finding efficiency is defined as the fraction of neutrino interactions that produce a flash according to the parameters specified in \cref{tab:FLASH_FINDING_PARAMETERS}. The efficiency is higher for the \gls{hd} geometry due to its smaller drift volume, which results in a higher probability of detecting the scintillation light produced by the neutrino interactions. The efficiency also increases with neutrino energy, as higher energy interactions produce more scintillation light, which is easier to detect and cluster into flashes.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\linewidth]{Images/Reco/tpc_cluster_efficiency_plane_scan_vd_1x8x14_3view_30deg_marley_official_coordinate_efficiency_x_y_z_plane_scan.png}
+    \caption[width=1\linewidth]{Flash-Finding efficiency for the \gls{vd} geometry. Results are shown as a function of (left) distance to the \gls{pds} plane, (center) true neutrino energy and (right) \gls{pds} plane match.\label{fig:FLASH_FINDING_PLANE}}
+\end{figure}
+
+Once the set of flashes is formed, the matching is performed by evaluating the distance between the \gls{tpc} vertex and the \gls{pds} flash, as well as their time difference. Flashes can be formed from signal or background activity. For any given flash, there is a non-negligible chance clustering pileup (where \texttt{ophits} formed from background activity get clustered into flashes where the trigger \texttt{ophit} originates from signal) or channel pileup (where \texttt{ophits} themselves are formed from a mixture of simultaneously arriving signal and background photons) occur. Therefore, we distinguish between:
 
 \begin{itemize}
     \item \textbf{Signal flashes}: those that contain at least some \texttt{ophit} originating from the signal activity. In any realistic scenario, these flashes will be contaminated with at least some amount of photons originating from background activity. Signal flashes can be subdivided into:
@@ -21,10 +44,3 @@ Once the set of flashes is formed, the matching is performed by evaluating the d
 \end{itemize}
 
 This distinction will become important as we will see in~\cref{sec:VERTEX_RESOLUTION}. Before attempting any full reconstruction based on these matching, it is important to understand the reach of the matching algorithm.
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=.49\linewidth]{Images/vd_1x8x14_3view_30deg_marley_official_x_scan.png}
-    \includegraphics[width=.49\linewidth]{Images/vd_1x8x14_3view_30deg_marley_official_plane_scan.png}
-    \caption[width=1\linewidth]{Flash--matching efficiency for the \gls{vd} geometry. Results are shown as a function of distance to the \gls{pds} plane (left) and \gls{pds}--plane match (right).\label{fig:FLASH_MATCHING_VD}}
-\end{figure}

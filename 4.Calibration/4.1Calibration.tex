@@ -1,13 +1,6 @@
 \subsection{Electron-Lifetime Correction}\label{sec:ELECTRON_LIFETIME}
 \gls{tpc} hits are first grouped into spatial clusters using a dedicated clustering algorithm. Each event contains a \textbf{main cluster}, corresponding to the primary outgoing electron, and zero or more \textbf{adjacent clusters}, interpreted as gamma-induced ``blips''. The first step in calibration involves correcting the total ionization charge of each cluster for the electron-lifetime attenuation in the \gls{lar} (see~\cref{eq:ELECTRON_LIFETIME}).
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.49\linewidth]{Images/hd_1x2x6_marley_official_nhit_distributions_electronk_nhits_scan.png}
-    \includegraphics[width=0.49\linewidth]{Images/vd_1x8x14_3view_30deg_marley_official_nhit_distributions_electronk_nhits_scan.png}
-    \caption[width=1\linewidth]{Neutrino energy correlation with number of hits in the primary cluster. \label{fig:DRIFT_ATTENUATION}}
-\end{figure}
-
 \begin{equation}
     \dfrac{Q_\text{raw}(n_\text{hit})}{E^\text{truth}_e} = F_0(n_\text{hit}) \cdot \exp\left(\frac{t^\text{drift}}{\tau_e}\right),
 \end{equation}\label{eq:ELECTRON_LIFETIME}
@@ -16,9 +9,9 @@ where \( Q_{\text{raw}} \) is the observed (uncorrected) cluster charge, \( E^\t
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_charge_lifetime_correction_corrected_nhitsnan_hist2d.png}
-    \caption[width=1\linewidth]{Drift attenuation correction.
-    \label{fig:CHARGE_CORRECTION}}
+    \includegraphics[width=.49\linewidth]{Images/Reco/charge_lifetime_correction_hd_1x2x6_marley_official_corrected_nhits_nan_hist1d.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/charge_lifetime_correction_vd_1x8x14_3view_30deg_marley_official_corrected_nhits_nan_hist1d.png}
+    \caption[width=1\linewidth]{Drift attenuation correction for \gls{hd} (left) and \gls{vd} (right).\label{fig:DRIFT_ATTENUATION_CORRECTION}}
 \end{figure}
 
 Assuming the main cluster corresponds to a fully-contained electron, we take its known true energy (from simulation) as a reference and compute the charge-to-energy conversion factor for each $(n_\text{hit})$ threshold. Additionally, to assess the impact of this assumption, with the goal of characterizing signal clusters in the context of background which limits the clustering parameters, one can also investigate a ``cheated charge''. This is computed for all clusters, adding the surrounding charge that has been backtracked to the main electron of the interaction. A calibration based on this cheated clustering gives us an understanding of the losses that arise from a limited clustering ability in the context of background.
@@ -31,8 +24,8 @@ After the truth drift correction has been applied to the data, the charge correc
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_marley_official_clustering_fit.png}
-    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_marley_official_electronclustering_fit.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/charge_correction_factor_hd_1x2x6_marley_official_values_factor_error_fit.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/electroncharge_correction_factor_hd_1x2x6_marley_official_values_factor_error_fit.png}
     \caption{Per hit correction factor distributions. (left) Primary cluster charge. (right) Cheated electron cluster charge.\label{fig:CHARGE_CORRECTION_FACTOR}}
 \end{figure}
 
@@ -41,7 +34,7 @@ After the truth drift correction has been applied to the data, the charge correc
 This trend is well-described by an exponential plus logistic function. The functional form used to fit the charge correction factor as a function of the number of hits is given by:
 
 \begin{equation}
-    \alpha(n_{\text{hit}}) = a \cdot \exp(-b \cdot n_{\text{hit}}) + c\cdot \left(1 + \exp(-d \cdot n_{\text{hit}})\right)^{-1},
+    \alpha(n_{\text{hit}}) = a \cdot \exp^{-b \cdot n_{\text{hit}}} + \dfrac{c}{1 + \exp^{(-d \cdot n_{\text{hit}})}}\,,
 \end{equation}
 
 where \( a, b, c, d \) are fit's exponential amplitude, decay, limiting constant, and sigmoid growth parameters, respectively. This function captures the initial rapid decrease in the correction factor for low hit counts, followed by a more gradual increase at higher hit counts, reflecting the underlying physics of charge collection and clustering in the detector.

@@ -1,16 +1,19 @@
 \subsection{Neutrino Vertex Smearing}
-As explained in \cref{sec:RECONSTRUCTION}, the drift--coordinate of the reconstructed vertex is obtained from the flash--matching algorithm, which combines the information from the \gls{tpc} cluster and the associated \gls{pds} flash. The results are shown in~\cref{fig:SIGNAL_VERTEX_SMEARING} for the \textit{vd\_1x8x14\_3view\_30deg} geometry with nominal background production. These distributions are not Gaussian, as expected from the nature of the matching algorithms. The resulting matching can be correct, leading to a small error, or completely wrong, leading to a large error in the reconstructed coordinate.
- 
-\begin{figure}[ht]
+As explained in \cref{sec:RECONSTRUCTION}, the drift-coordinate of the reconstructed vertex is obtained from the flash-matching algorithm, which combines the information from the \gls{tpc} cluster and the associated \gls{pds} flash. 
+
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_vertex_smearing_coordinate_hist2d.png}
     \caption[width=1\linewidth]{Vertex smearing from calibrated signal.\label{fig:SIGNAL_VERTEX_SMEARING}}
 \end{figure}
 
-To have a better understanding of the reconstruction performance, we can compute the cumulative vertex error~\cref{fig:CUMMULATIVE_VERTEX_ERROR}. This plot shows the percentage of events that are reconstructed within a certain vertex error tolerance. For instance, we can see that approximately \num{90}\% of the events have a vertex error below \SI{1}{\centi\meter} in the y-- and z--coordinates, while only about \num{60}\% of the events achieve this level of accuracy in the x--coordinate.
+The results are shown in~\cref{fig:SIGNAL_VERTEX_SMEARING} for the \textit{vd\_1x8x14\_3view\_30deg} geometry with nominal background production. These distributions are not Gaussian, as expected from the nature of the matching algorithms. The resulting matching can be correct, leading to a small error, or completely wrong, leading to a large error in the reconstructed coordinate.
 
-\begin{figure}[ht]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_variable_energy_scan.png}
-    \caption[width=1\linewidth]{\gls{vd} cumulative vertex error distribution.\label{fig:CUMMULATIVE_VERTEX_ERROR}}
+    \caption[width=1\linewidth]{\gls{hd} cumulative vertex error distribution. Showing $x$ (left), $y$ (center) and $z$ (right) coordinates from left to right.
+    \label{fig:CUMMULATIVE_VERTEX_ERROR}}
 \end{figure}
+
+To have a better understanding of the reconstruction performance, we can compute the cumulative vertex error~\cref{fig:CUMMULATIVE_VERTEX_ERROR}. This plot shows the percentage of events that are reconstructed within a certain vertex error tolerance. For instance, we can see that approximately \num{90}\% of the events have a vertex error below \SI{1}{\centi\meter} in the y- and z-coordinates, while only about \num{60}\% of the events achieve this level of accuracy in the x-coordinate.

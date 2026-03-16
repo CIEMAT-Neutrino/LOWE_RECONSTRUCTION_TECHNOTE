@@ -1,43 +1,34 @@
-\subsection{Neutrino Energy Calibration}\label{sec:NEUTRINO_CALIBRATION}
+\subsection{Neutrino Energy Reconstruction}\label{sec:NEUTRINO_CALIBRATION}
 The main electron energy is corrected for the drift time attenuation and the charge calibration factor, as described in \cref{sec:ELECTRON_CALIBRATION}. The main electron energy is then used to compute the total neutrino energy, which is computed from the main electron energy and the energies of all adjacent clusters (up to \SI{1}{\meter}). The adjacent clusters are assumed to be gamma-induced ``blips'' and are calibrated using the same charge calibration factor as the main electron. The total neutrino energy is computed as:
 
 \begin{equation}
-    E_{\nu}^{\text{raw}} = E_{e}^{\text{final}} + \sum_i E_{\gamma,i}^{\text{final}}.
+    E^\text{reco}_{\nu} = E_{e}^{\text{reco}} + \sum_i E_{\text{blip, i}}^{\text{reco}}\,.\label{eq:NEUTRINO_CALIBRATION}
 \end{equation}
+
+where \( a \) and \( b \) are derived from the linear fits to the simulated \( E_{\text{true}} \) versus \( E_{\text{reco}} \) distributions as shown in \cref{fig:NEUTRINO_ENERGY_SMEARING}.
 
 This strategy is the first and most obvious approach for neutrino energy reconstruction (\textbf{TotalEnergy}). However, it does not account for the energy smearing of the signal, and the presence of background can significantly affect the reconstructed neutrino energy. Therefore, we study alternative methods to improve the energy resolution and mitigate the effects of background contamination.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_adjcl_selection_signal_hist2d.png}
+    \includegraphics[width=\linewidth]{Images/Reco/adjcl_selection_hd_1x2x6_centralapa_marley_official_adjclr_adjclcharge_signal_logz_hist2d.png}
     \caption[width=1\linewidth]{Distribution of the adjacent clusters charge and distance to the main electron cluster.\label{fig:ADJACENT_CLUSTER_RADIUS_CHARGE}}
 \end{figure}
 
 The next simple solution is to apply a selection on the adjacent clusters (\textbf{SelectedEnergy}), which are assumed to be gamma-induced ``blips''. The selection is based on the adjacent cluster charge and distance to the main electron cluster. The adjacent clusters are selected if they have a charge above a certain threshold and are within a certain distance to the main electron cluster. The thresholds are tuned to maximize the signal over background ratio. \cref{fig:ADJACENT_CLUSTER_RADIUS_CHARGE} shows the distribution of the adjacent clusters charge and distance to the main electron cluster and selection thresholds.
 
-\iffalse
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[trim={6cm 0cm 6cm 0cm},clip,width=\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Random_Forest_Score.png}
-    \caption[width=1\linewidth]{(left) Purity vs Efficiency curve of the random forest regressor for both the train and the test samples. (center) Score of the random forest regressor for both \gls{cc} samples. (right) ROC curve of the random forest regressor.\label{fig:RF_SCORE}}
-\end{figure}
-\fi
-
 \begin{table}[ht!]
     \centering
     \begin{tabular}{lcc}
         \hline
-        \textbf{Configuration} & \textbf{Charge (ADC x tick)} & \textbf{Distance (cm)} \\ \hline
-        \hline
-        hd\_1x2x6 & 5 & 50 \\
-        hd\_1x2x6\_centralAPA & 10 & 30 \\
-        hd\_1x2x6\_lateralAPA & 8 & 40 \\
-        vd\_1x8x14\_3view\_30deg & 12 & 25 \\
-        vd\_1x8x14\_3view\_30deg\_nominal & 15 & 20 \\
-        vd\_1x8x14\_3view\_30deg\_shielded & 10 & 30 \\
+        \textbf{Configuration} & \textbf{Charge}     & \textbf{Distance} \\ \hline
+        hd\_1x2x6\_centralAPA  & \SI{275}{\ADC\tick} & \SI{12.1}{\centi\meter} \\
+        hd\_1x2x6\_lateralAPA  & \SI{309}{\ADC\tick} & \SI{11.0}{\centi\meter} \\
+        vd\_1x8x14\_3view\_30deg\_nominal  & \SI{304}{\ADC\tick} & \SI{13.6}{\centi\meter} \\
+        vd\_1x8x14\_3view\_30deg\_shielded & \SI{308}{\ADC\tick} & \SI{17.6}{\centi\meter} \\
         \hline
     \end{tabular}
-    \caption{Adjacent cluster selection thresholds for different background scenarios.\label{tab:ADJACENT_CLUSTER_SELECTION_THRESHOLDS}}
+    \caption{Adjacent cluster selection thresholds for the different background scenarios.\label{tab:ADJACENT_CLUSTER_SELECTION_THRESHOLDS}}
 \end{table}
 
 \Cref{tab:ADJACENT_CLUSTER_SELECTION_THRESHOLDS} summarizes the different thresholds used for the adjacent cluster selection, based on the background scenario. The selected adjacent clusters are then summed to the primary cluster energy to obtain the reconstructed neutrino energy (\textbf{SelectedEnergy}).
@@ -58,12 +49,14 @@ The next step is to apply a machine learning algorithm to the adjacent clusters 
     \item SelectedEnergy: reconstructed \textbf{SelectedEnergy}.
 \end{itemize}
 
-From which the highlighted features are the most important for the random forest regressor, as shown in \cref{fig:RF_FEATURE_IMPORTANCE}. Finally, as a benchmark for comparison between the here presented reconstruction algorithms and with the aim of quantizing the impact of adjacent gammas on the total neutrino energy reconstruction, we introduce the \textbf{ClusterEnergy} algorithm as the reconstruction method based purely on the main electron cluster. The only correction is a fixed calibration offset applied to the full sample to align the center of the distribution with the true energy.
+From which the highlighted features are the most important for the random forest regressor, as shown in \cref{fig:RF_FEATURE_IMPORTANCE}.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Random_Forest_Feature_Importance.png}
-    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_Discriminant_Calibration_1D.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/random_forest_importance_hd_1x2x6_centralapa_marley_official_feature_importance_config_scan.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/cluster_discriminant_hd_1x2x6_centralapa_marley_official_label_hist1d.png}
     \caption[width=1\linewidth]{(left) Feature importance of the random forest regressor. (right) Discriminant calibration for the random forest regressor.\label{fig:RF_FEATURE_IMPORTANCE}}
 \end{figure}
+
+Finally, as a benchmark for comparison between the here presented reconstruction algorithms and with the aim of quantizing the impact of adjacent gammas on the total neutrino energy reconstruction, we introduce the \textbf{ClusterEnergy} algorithm as the reconstruction method based purely on the main electron cluster. The only correction is a fixed calibration offset applied to the full sample to align the center of the distribution with the true energy.
 

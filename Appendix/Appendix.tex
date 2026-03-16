@@ -8,3 +8,49 @@ Due to its nature as a noble gas, \(^{222}\text{Rn}\) is difficult to remove fro
   \item \textbf{Lead (\(^{210}\text{Pb}\))}: A long--lived isotope (\(t_{1/2} = 22.3\)~years) that accumulates on detector surfaces~\cite{exo_radon}.
   \item \textbf{Polonium (\(^{210}\text{Po}\))}: An alpha emitter with a half--life of 138~days. It can be used as a surface contamination proxy due to its distinct alpha signal~\cite{saldanha_thesis}.
 \end{itemize}
+
+\subsection*{TPC Signal Processing with Wire-Cell}
+\gls{wirecell} is a software toolkit for signal processing and reconstruction in liquid argon TPCs. It provides a comprehensive framework for converting raw digitized waveforms into high-level physics objects, such as 3D space points, clusters, and tracks. The key features of \gls{wirecell} include:
+
+\begin{itemize}
+    \item TPC Signal Processing (2D Deconvolution).The initial stage involves converting raw digitized waveforms into the distribution of ionization electrons. 
+    \begin{itemize}
+        \item \textbf{Noise Filtering}: Excess noise is statistically removed from the digitized TPC waveforms.
+        \item \textbf{2D Deconvolution}: This technique accounts for the detector response in both the \textit{time} and \textit{wire} dimensions. It statistically unfolds the electronics response and the long-range induction field response.
+    \end{itemize}
+
+    \item Tomographic 3D Imaging. \gls{wirecell} utilizes tomographic principles to resolve the inherent ambiguities of wire-plane readouts.
+    \begin{itemize}
+        \item \textbf{Slicing and Tiling}: Deconvolved signals are divided into time slices (typically $\sim$2--3 $\mu$s), and wires with signals are overlapped to identify potential 3D "cells" or "blobs".
+        \item \textbf{Solving for Ghosts}: To remove "fake" hits (ghosts) created by the wire geometry, Wire-Cell applies \textbf{compressed sensing} (L1 regularization) to solve a non-deterministic linear system. 
+        \item \textbf{Mathematical Objective}: The software minimizes a $\chi^2$ function with a regularization term:
+        \begin{equation}
+            \chi^2 = \|y' - A'x\|_2^2 + \lambda\|x\|_1
+        \end{equation}
+        where $x$ represents the true charge to be resolved and $y$ represents the measured wire signals.
+    \end{itemize}
+
+    \item 3D Clustering and Charge-Light Matching. Reconstructed 3D space points are grouped into clusters based on connectivity. 
+    \begin{itemize}
+        \item \textbf{Event Timing ($t_0$)}: Because TPC charge signals and scintillation light are decoupled, Wire-Cell performs many-to-many matching between TPC clusters and PMT flashes.
+        \item \textbf{Matching Principle}: This process utilizes the proportionality of the light signal to the reconstructed 3D charge to determine the precise time of the neutrino interaction.
+    \end{itemize}
+
+    \item 3D Trajectory and $dQ/dx$ Fitting. Once $t_0$ is determined, high-resolution tracking is performed.
+    \begin{itemize}
+        \item \textbf{Trajectory Fit}: A fine-grained 3D path is determined for each cluster using algorithms such as the Steiner-tree-inspired graph approach [19-21].
+        \item \textbf{Calorimetry ($dQ/dx$)}: Ionization charge per unit length ($dQ/dx$) is fitted along the track. This information is critical for Particle Identification (PID), allowing the software to distinguish between particles like protons, muons, and electrons [2, 23, 24].
+    \end{itemize}
+    \item A key features in \gls{wirecell} is its \textbf{topology-agnostic} approach, making it effective for both simple tracks and complex electromagnetic showers. It significantly reduces the impact of non-functional wires by allowing reconstruction with only two functional planes, reducing dead volume from $\sim$30\% to $\sim$3\%.
+\end{itemize}
+
+Currently in \gls{dune} it is used to model the drift of ionisation electrons towards the TPC wire planes, accounting for diffusion, recombination, and attachment effects. The resulting charge distribution at the wire planes is then converted into the induced signals on the wires. In future simulations, the \gls{wirecell} toolkit could be used to provide all of its reconstructions goals.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/Reco/electron_energy_resolution_vd_1x8x14_3view_30deg_nominal_marley_official_values_rms_clustering_nhits_3_drift_true_scan.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/electron_energy_resolution_vd_1x8x14_3view_30deg_nominal_marley_official_values_rms_drift_nhits_3_clustering_ideal_scan.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/electron_energy_resolution_vd_1x8x14_3view_30deg_nominal_marley_official_values_rms_nhits_clustering_reco_drift_true_scan.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/vd_vd_1x8x14_3view_30deg_vd_1x8x14_3view_30deg_nominal_marley_official_values_rms_drift_reco_nhits_3_clustering_reco_comparison.png}
+    \caption[width=1\linewidth]{Effect of clustering (ideal vs reconstructed), drift correction (ideal vs reconstructed vs none), and hit threshold on the electron energy resolution. (Top Left) Shows the effect of non-ideal clustering. (Top Right) Shows the effect of not applying a drift correction. (Bottom Left) Shows the effect of lower hit threshold. (Bottom Right) Shows the effect of background.\label{fig:VD_ELECTRON_RMS_COMAPRISON}}
+\end{figure}

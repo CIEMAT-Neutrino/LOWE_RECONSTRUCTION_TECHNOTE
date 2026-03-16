@@ -1,5 +1,14 @@
 \section{Neutrino Energy Calibration\label{sec:CALIBRATION}}
-Once the reconstruction algorithms are defined and we have obtained the raw variables from the TPC and PDS subsystems, we can proceed to calibrate the neutrino energy. The calibration process is based on the true information of the main electron of the interaction, which allows us to compute a hit-dependent calibration workflow that recovers the particle's original kinetic energy. The average calibration factor is then applied to all adjacent clusters of the event candidate and the total neutrino energy is computed from four different algorithms (see \cref{sec:NEUTRINO_CALIBRATION}). During the \gls{tpc} calibration process, the drift coordinate is assumed from truth. A discussion on how the intrinsic background contamination of the detector affects the signal reconstruction at these low energies and the effects on drift coordinate resolution (as a result of \gls{tpc}--\gls{pds} match) are presented in~\cref{sec:RESULTS}.
+The calibration and characterization of the \gls{cc} neutrino signal are based on the true information of the main electron of the interaction. If not otherwise mentioned, the plots in this section are produced from a MARLEY generated \gls{cc} neutrino sample with central \gls{apa} background. \Cref{fig:NHIT_DISTRIBUTIONS} shows the correlation between the neutrino's main electron energy and the number of hits in the main \gls{tpc} cluster, which is used as a proxy for the electron energy computation in the calibration process.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.49\linewidth]{Images/hd_1x2x6_marley_official_nhit_distributions_electronk_nhits_scan.png}
+    \includegraphics[width=0.49\linewidth]{Images/vd_1x8x14_3view_30deg_marley_official_nhit_distributions_electronk_nhits_scan.png}
+    \caption[width=1\linewidth]{Neutrino energy correlation with number of hits in the primary cluster. \label{fig:NHIT_DISTRIBUTIONS}}
+\end{figure}
+
+The first step of the reconstruction process has already happened when clustering the hits of the \gls{tpc} and \gls{pds} detector subsystems in the simulation's \emph{reco1} stage. Subsequently, the electron's charge is corrected for the drift attenuation computing a hit-dependent calibration factor that recover the particle's original kinetic energy (see \cref{sec:ELECTRON_LIFETIME,sec:ELECTRON_CALIBRATION}). Finally, the average calibration factor is applied to all adjacent clusters of the event candidate and the total neutrino energy is computed from four different algorithms (see \cref{sec:GAMMA_CALIBRATION,sec:NEUTRINO_CALIBRATION,sec:SIGNAL_SMEARING}). During the \gls{tpc} calibration process, the drift coordinate is assumed from truth. A discussion on how the intrinsic background contamination of the detector affects the signal reconstruction and the effects on drift coordinate resolution (as a result of \gls{tpc}-\gls{pds} match) are presented together with the vertex and energy resolution results in~\cref{sec:RESULTS}.
 
 \input{4.Calibration/4.1Calibration}
 \input{4.Calibration/4.2Calibration}

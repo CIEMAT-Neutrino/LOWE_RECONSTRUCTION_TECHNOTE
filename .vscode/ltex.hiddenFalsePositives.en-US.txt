@@ -1,0 +1,1 @@
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q (left) and \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q (right) detection efficiency for signal clustering parameters of 3 adjacent channels and 12.5 .\\E$"}

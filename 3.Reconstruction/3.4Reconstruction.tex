@@ -1,35 +1,4 @@
 \subsection{Event Definition}\label{sec:EVENT_DEFINITION}
-The first figure of merit to be extracted from the simulation is the detection efficiency (see~\cref{fig:DETECTION_EFFICIENCY} (left)). We observe a strong dependence on the number of hits. Only with a minimum hit condition of 2, the simulation reaches detection efficiency values of $\num{\sim 100}\%$. Achieving a reconstruction threshold ($\num{> 90}\%$ efficiency) above \SI{5.5}{\mega\electronvolt} requires a minimum hit condition of 1 hit. Instead of interpreting this efficiency in terms of the neutrino electron, using the information provided in~\cref{fig:NEUTRINO_ELECTRON_CORRELATION} (neutrino--electron energy offset \SI{> 4.5}{\mega\electronvolt}) one can deduce an electron detection threshold of \SI{\sim1}{\mega\electronvolt}. A better estimation of the detection threshold can be extracted from the energy resolution fit in~\cref{fig:RMS}.
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_purity.png}
-    \includegraphics[width=.49\linewidth]{Images/hd_1x2x6_centralAPA_marley_official_completeness.png}
-    \caption{Clustering efficiency plots. (left) Neutrino signal purity in the main cluster. (right) Electron charge completeness in the main cluster.\label{fig:CLUSTERING_EFFICIENCY}}
-\end{figure}
-
-The next parameter to evaluate is the completeness of the main clusters, which is a measure of the electron charge--confinement given a certain clustering parameter set. For the purpose of the solar neutrino analysis of DUNE, clustering parameters of 3 adjacent channels and 25 ticks have been used to maximize completeness while ensuring cluster purity in the context of background. The most up-to-date values for this clustering should be found in the producer's \href{https://github.com/DUNE/dunereco/blob/develop/dunereco/LowEUtils/fcl/SolarCluster.fcl}{SolarCluster.fcl}. Despite the good overall completeness of the signal, we observe a trend with respect to the number of hits per cluster, which can be accounted for in the later described charged correction factor to improve reconstruction. The trend that one observes is clear and understandable; for depositions which result in a lower number of hits (this can happen because of low energy deposition or a perpendicular trajectory of the particle with respect to the \gls{tpc} plane) it is more likely that clusters of similar sizes are formed (e.g. 2 clusters of 1 hit) resulting in a lower charge in the main cluster.
-
-\gls{dune}'s solar analysis workflow starts with calibrating the clustered hits from the \gls{cc} interaction of simulated neutrino events with the \gls{marley} generator. The \gls{cc} channel is chosen to be the default based on its dominant cross-section in the low-energy range, as well as its richer topology. All energy and spacial resolution results presented here should be considered an underestimation (or at least compatible) to the ones results for the \gls{es} channel. Each cluster's information is reduced to a point-like object characterized by its number of hits (\texttt{nhits}), \texttt{charge} (summed over the charge of the individual hits) and a 2.5D-reconstructed vertex $<t, y, z>$ computed from the charge-weighted average of the individual hits.
-
-\begin{table}[ht]
-    \centering
-    \begin{minipage}{0.9\linewidth}
-        \centering
-        Adjacent Cluster Distribution - Vertex Distance \SI{20}{\centi\meter}\\
-        \vspace{.15cm}
-        \input{Tables/marley_official_adjacent_cluster_counts_distance20_signal_intrinsic_external.tex}
-        \caption{Average number of adjacent clusters per primary signal cluster for \SI{20}{\centi\meter} distance.\label{tab:ADJCLUSTERNUM_RADIAL_20}} 
-    \end{minipage}\hfill
-    \begin{minipage}{0.9\linewidth}
-        \centering
-        Adjacent Cluster Distribution - Vertex Distance \SI{100}{\centi\meter} \\
-        \vspace{0.15cm}
-        \input{Tables/marley_official_adjacent_cluster_counts_distance100_signal_intrinsic_external.tex}
-        \caption{Average number of adjacent clusters per primary signal cluster for \SI{100}{\centi\meter} distance.\label{tab:ADJCLUSTERNUM_RADIAL_100}} 
-    \end{minipage}
-\end{table}
-
 We define a low-energy event as the combination of a \texttt{primary cluster} together with its \texttt{adjacent clusters} and a list of \texttt{flashes} that are matching candidates for the drift coordinate reconstruction (see \cref{sec:FLASH_MATCHING}). In any neutrino analysis it will become important to try to distinguish (at least on average) the \texttt{adjacent cluster} distributions for any low-energy event, not only to distinguish background activity (e.g. neutron captures) from signal events, but also to identify the different interaction channels of the neutrino interaction (\gls{cc} events produce de-excitation gammas that are not present in \gls{es} interactions). Consequently, the higher the projected background activity in any of the isolated drift volumes of \gls{dune}'s \gls{fd}s, the harder particle identification and channel separation will become. Notice that there is nothing preventing a single neutrino interaction from producing more than one low-energy event. Rarely, but not inevitably, secondary gammas scatter further than \SI{1}{\meter} in \gls{lar} or a background-induced miss-match in the \gls{tpc} reconstruction leads to blips appearing in uncorrelated regions of the detector. Independently of this possibility, a low-energy event reconstruction efficiency can be defined as the possibility of a single particle interaction to produce at least one low-energy event that can be fully reconstructed. This efficiency is shown in \cref{fig:DETECTION_EFFICIENCY} for both \gls{hd} and \gls{vd} geometries as a function of the cluster's \texttt{nhit} threshold value. The chosen signal clustering parameters are 3 adjacent channels and \SI{12.5}{\micro\second} time window. The results show a clear and expected decrease in efficiency with increasing \texttt{nhit} threshold, as low-energy events are more likely to be lost when applying stricter cuts on the minimum number of hits per cluster. This shows the importance of a simple clustering approach to low-energy neutrino reconstruction, as more sophisticated algorithms might lead to a considerable decrease in efficiency.
 
 \begin{figure}[ht!]
@@ -39,7 +8,43 @@ We define a low-energy event as the combination of a \texttt{primary cluster} to
     \caption{\gls{hd} (left) and \gls{vd} (right) detection efficiency for signal clustering parameters of 3 adjacent channels and \SI{12.5}{\micro\second}.\label{fig:DETECTION_EFFICIENCY}}
 \end{figure}
 
+The first figure of merit to be extracted from the simulation is the detection efficiency (see~\cref{fig:DETECTION_EFFICIENCY}). We observe a strong dependence on the number of hits. Achieving a reconstruction threshold ($\num{> 90}\%$ efficiency) above \SI{5.5}{\mega\electronvolt} requires a minimum hit condition of 1 hit.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/Reco/clustering_efficiency_hd_1x2x6_marley_official_values_density_completeness_nhits_logy_scan.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/clustering_efficiency_vd_1x8x14_3view_30deg_marley_official_values_density_completeness_nhits_logy_scan.png}
+    \caption{Detection efficiency for the \gls{hd} (left) and \gls{vd} (right) geometries. Results are shown as a function of the minimum number of hits per cluster and true neutrino energy.\label{fig:EVENT_COMPLETENESS}}
+\end{figure}
+
+The next parameter to evaluate is the completeness of the main clusters, which is a measure of the electron charge--confinement given a certain clustering parameter set. For the purpose of the solar neutrino analysis of DUNE, clustering parameters of 3 adjacent channels and 25 ticks have been used to maximize completeness while ensuring cluster purity in the context of background. The most up-to-date values for this clustering should be found in the producer's \href{https://github.com/DUNE/dunereco/blob/develop/dunereco/LowEUtils/fcl/SolarCluster.fcl}{SolarCluster.fcl}. Despite the good overall completeness of the signal, we observe a trend with respect to the number of hits per cluster, which can be accounted for in the later described charged correction factor to improve reconstruction. The trend that one observes is clear and understandable; for depositions which result in a lower number of hits (this can happen because of low energy deposition or a perpendicular trajectory of the particle with respect to the \gls{tpc} plane) it is more likely that clusters of similar sizes are formed (e.g. 2 clusters of 1 hit) resulting in a lower charge in the main cluster.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.49\linewidth]{Images/Reco/clustering_efficiency_hd_1x2x6_centralapa_marley_official_values_density_purity_nhits_logy_scan.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/clustering_efficiency_vd_1x8x14_3view_30deg_nominal_marley_official_values_density_purity_nhits_logy_scan.png}
+    \caption{Cluster purity for the \gls{hd} (left) and \gls{vd} (right) geometries. Results are shown as a function of the minimum number of hits per cluster and true neutrino energy.\label{fig:EVENT_PURITY}}
+\end{figure}
+
+\gls{dune}'s solar analysis workflow starts with calibrating the clustered hits from the \gls{cc} interaction of simulated neutrino events with the \gls{marley} generator. The \gls{cc} channel is chosen to be the default based on its dominant cross-section in the low-energy range, as well as its richer topology. All energy and spacial resolution results presented here should be considered an underestimation (or at least compatible) to the ones results for the \gls{es} channel. Each cluster's information is reduced to a point-like object characterized by its number of hits (\texttt{nhits}), \texttt{charge} (summed over the charge of the individual hits) and a 2.5D-reconstructed vertex $<t, y, z>$ computed from the charge-weighted average of the individual hits.
+
+\begin{table}[ht!]
+    \centering
+    Adjacent Cluster Distribution - Vertex Distance \SI{100}{\centi\meter} \\
+    \vspace{0.15cm}
+    \input{Tables/marley_official_adjacent_cluster_counts_distance100_signal_intrinsic_external.tex}
+    \caption{Average number of adjacent clusters per primary signal cluster for \SI{100}{\centi\meter} distance.\label{tab:ADJCLUSTERNUM_RADIAL_100}} 
+\end{table}
+
 For the purpose of this work, secondary low-energy events coming from a single neutrino interaction will always be ignored in favor of the one with the highest charge in the primary cluster. This is to ensure that the reconstruction performance is evaluated for the most complete reconstruction object in any interaction but in any physics analysis these should be kept and treated as part of the signal or even background samples.
+
+\begin{table}[ht!]
+    \centering
+    Adjacent Cluster Distribution - Vertex Distance \SI{20}{\centi\meter}\\
+    \vspace{.15cm}
+    \input{Tables/marley_official_adjacent_cluster_counts_distance20_signal_intrinsic_external.tex}
+    \caption{Average number of adjacent clusters per primary signal cluster for \SI{20}{\centi\meter} distance.\label{tab:ADJCLUSTERNUM_RADIAL_20}} 
+\end{table}
 
 For the specific purpose of the solar neutrino studies an analyzer module (\href{https://github.com/DUNE/duneana/blob/develop/duneana/SolarNuAna/SolarNuAna_module.cc}{SolarNuAna\_module.cc}) has been written to combine these reconstruction objects with the truth information of the event. This module essentially combines all the information needed to perform the calibration and reconstruction of the signal candidates. The biggest caveat from the analysis point of view is that all clusters and flash information is reduced to a point-like data structure. This is, of course, a choice of design in the analyzer and allows for a simpler handling of the data because all event candidates have the same dimension. In future works, this analyzer should be substituted by the more general \href{https://github.com/DUNE/duneana/blob/develop/duneana/LowEAna/LowEAna_module.cc}{LowEAna\_module.cc} which aims to provide the same event reconstruction while keeping the internal structure of the candidate clusters to allow for better calibration and discrimination strategies.
 

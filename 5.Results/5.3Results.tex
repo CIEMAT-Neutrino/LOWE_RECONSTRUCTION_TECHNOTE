@@ -1,23 +1,18 @@
 \subsection{Fiducialization Efficiency}
-In order to reduce the impact of background events originating from the detector materials and the surrounding environment, a fiducial volume cut is typically applied to the reconstructed neutrino events in low energy--analyses. This cut is based on the reconstructed position of the primary \gls{tpc} cluster associated with the neutrino interaction. The fiducial volume is defined as a region within the detector that is at least x~\unit{\centi\meter} away from any external detector boundary. This distance can be chosen in any analysis to optimize the signal--to--background ratio. The results for the \gls{hd} geometry with central \gls{apa} background scenario are shown in \cref{fig:FIDUCIALIZATION_EFFICIENCY} as a function of the distance to the detector boundary for different neutrino energies. The efficiency is calculated as the fraction of events with a reconstructed vertex position that lies within the fiducial volume, relative to the total number of simulated neutrino interactions occurring within the fiducial volume. As expected, the efficiency increases with increasing distance from the detector boundary, as events occurring closer to the boundary are more likely to be miss--reconstructed. Additionally, the efficiency improves with increasing neutrino energy, as higher energy events tend to produce more ionization charge and scintillation light, leading to better vertex reconstruction accuracy.
+In order to reduce the impact of background events originating from the detector materials and the surrounding environment, a fiducial volume cut is typically applied to the reconstructed neutrino events in low energy-analyses. This cut is based on the reconstructed position of the primary \gls{tpc} cluster associated with the neutrino interaction. The fiducial volume is defined as a region within the detector that is at least x~\unit{\centi\meter} away from any external detector boundary. This distance can be chosen in any analysis to optimize the signal-to-background ratio.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/marley_official_fiducial_efficiency_energynan_inversefalse_referencetruth_x_y_z.png}
-    \caption{Fiducialisation efficiency as a function of cut--distance to the detector boundary for the average neutrino energy sample of \qtyrange{4}{30}{\mega\electronvolt}. From (left) to (right) X, Y and Z coordinates.\label{fig:FIDUCIALIZATION_EFFICIENCY}}
+    \includegraphics[width=.49\linewidth]{Images/Reco/fiducial_efficiency_hd_1x2x6_vd_1x8x14_3view_30deg_marley_official_values_efficiency_x_energy_nan_inverse_false_reference_reco_comparison.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/fiducial_efficiency_marley_official_values_efficiency_x_energy_nan_inverse_false_reference_reco_comparison.png}
+    \caption{Fiducialisation efficiency as a function of cut-distance to the detector boundary for the average neutrino energy sample of \qtyrange{4}{30}{\mega\electronvolt}.\label{fig:FIDUCIALIZATION_EFFICIENCY}}
 \end{figure}
 
-For a better comparison between the modules, we evaluate the average fiducialisation efficiency up to \SI{100}{\centi\meter} for \SI{10}{\mega\electronvolt} neutrino energies. The results for the \gls{hd} and \gls{vd} geometries are shown in \cref{tab:FIDUCIALIZATION_COMPARISON_10MEV}, respectively. The efficiency values are generally high, especially in the y-- and z--coordinates, where they exceed \num{65}\% in all cases. The x--coordinate shows a lower efficiency, particularly for the \gls{vd} geometry, which can be attributed to the larger drift volume and lower TPC--PDS matching efficiency. The central \gls{hd} volumes also have a lower fiducialisation capacity towards their edges, but thanks to the intrinsic fiducialisation provided by the lateral \glspl{apa}, 
-
-\iffalse
-\begin{table}[ht!]
-    \centering
-    \input{Tables/Fiducialisation_Efficiency_6MeV.tex}
-    \caption[width=1\linewidth]{Average vertex fiducialisation efficiency at \SI{100}{\centi\meter} from the detector boundary.\label{tab:FIDUCIALIZATION_COMPARISON_6MEV}}
-\end{table}
-\fi
+The results for the \gls{hd} geometry with central \gls{apa} background scenario are shown in \cref{fig:FIDUCIALIZATION_EFFICIENCY} as a function of the distance to the detector boundary for different neutrino energies. The efficiency is calculated as the fraction of events with a reconstructed vertex position that lies within the fiducial volume, relative to the total number of simulated neutrino interactions occurring within the fiducial volume. As expected, the efficiency increases with increasing distance from the detector boundary, as events occurring closer to the boundary are more likely to be miss-reconstructed. Additionally, the efficiency improves with increasing neutrino energy, as higher energy events tend to produce more ionization charge and scintillation light, leading to better vertex reconstruction accuracy.
 
 \begin{table}[ht!]
     \input{Tables/Fiducialisation_Efficiency_10MeV.tex}
     \caption[width=1\linewidth]{Average vertex fiducialisation efficiency at \SI{100}{\centi\meter} from the detector boundary.\label{tab:FIDUCIALIZATION_COMPARISON_10MEV}}
 \end{table}
+
+For a better comparison between the modules, we evaluate the average fiducialisation efficiency up to \SI{100}{\centi\meter} for \SI{10}{\mega\electronvolt} neutrino energies. The results for the \gls{hd} and \gls{vd} geometries are shown in \cref{tab:FIDUCIALIZATION_COMPARISON_10MEV}, respectively. The efficiency values are generally high, especially in the y- and z-coordinates, where they exceed \num{65}\% in all cases. The x--coordinate shows a lower efficiency, particularly for the \gls{vd} geometry, which can be attributed to the larger drift volume and lower TPC--PDS matching efficiency. The central \gls{hd} volumes also have a lower fiducialisation capacity towards their edges, but thanks to the intrinsic fiducialisation provided by the lateral \glspl{apa}.

@@ -1,50 +1,89 @@
 % !TEX root = ~/Code/TN_LOWE_RECONSTRUCTION/main.tex
-\section{Low-Energy Event Reconstruction\label{sec:RECONSTRUCTION}}
+\section{Low-Energy Event Reconstruction}\label{sec:RECONSTRUCTION}
 % Delete the text and write your Method(s) here:
 %------------------
-As a next step, after the generation, propagation and detector simulation of the \gls{mc} workflow, the reconstruction (\emph{reco}) step for these studies includes basic hit-finding algorithm and clustering schemes that applies both to the \gls{tpc} and \gls{pds}. This \emph{reco} stage typically is subdivided into two:
+The signal waveforms are passed forward to the reconstruction routines. A peak finding algorithm fits Gaussian distributions to the signal waveforms, where each successful fit is formed into an object known as a \gls{tpc} \textit{hit}. The area under all the \gls{tpc} hits is proportional to the energy deposited by the charge particles as they propagate through the liquid argon volume.  For the horizontal drift processing chain, a disambiguation routine is then applied to the induction plane hits to deduce which drift volume they originated from. This routine combines spatial and timing information of all hits in all planes simultaneously to maximize performance. The \gls{tpc} hits are then passed forward to the higher-level reconstruction routines.
 
-\begin{itemize}
-    \item \emph{Reco1}: Conceptually, this part of the process is designed to provide the common building blocks for subsequent reconstruction stages: the \texttt{hits}. These are localized charge or photon depositions in the \gls{tpc} or \gls{pds}, respectively. As quanta of information, the algorithms that produce them are optimized for efficiency and accuracy by a full team of \gls{larsoft} developers. The \texttt{hits} used in this work are the standard \gls{larsoft} objects produced from the main reconstruction workflow and common to all \gls{dune} studies. Nevertheless, higher-level clustering algorithms have been specifically developed to group these \texttt{hits} into more complex objects that can be used for low-energy event reconstruction.
+As a next step, after the generation, propagation and detector simulation of the \gls{mc} workflow, the reconstruction (\emph{Reco}) step for these studies includes basic hit-finding algorithm and clustering schemes that applies both to the \gls{tpc} and \gls{pds}. This \emph{Reco} stage typically is subdivided into two:
+
+% Summarize the previously defined methods in a diagram:
+\begin{figure}[ht!]
+    \centering
+    \begin{tikzpicture}[
+        node distance=3cm,
+        block/.style={rectangle, draw, fill=gray!20, text width=10em, text centered, rounded corners, minimum height=2cm},
+        pdsblock/.style={rectangle, draw, fill=blue!20, text width=10em, text centered, rounded corners, minimum height=2cm},
+        tpcblock/.style={rectangle, draw, fill=red!20, text width=10em, text centered, rounded corners, minimum height=2cm},
+        eventblock/.style={rectangle, draw, fill=green!20, text width=10em, text centered, rounded corners, minimum height=2cm},
+        emptyblock/.style={rectangle, draw=white, fill=white!20, text width=10em, text centered, rounded corners, minimum height=2cm},     arrow/.style={thick,->,>=stealth}
+    ]
+        % Nodes
+            % Reco1 nodes
+            \node[block] (lowe) {Low-Energy \emph{Reco} Workflow};
+            \node[tpcblock, below left of=lowe, yshift=-1cm, xshift=-1cm] (tpc) {TPC Hit Finding \& Disambiguation};
+            \node[pdsblock, below right of=lowe, yshift=-1cm, xshift=1cm] (pds) {PDS Deconvolution};
+            \node[tpcblock, below of=tpc] (plane) {TPC Clustering \& \textbf{Cluster Finding}};
+            \node[pdsblock, below of=pds] (hit) {PDS Hit Finding};
+            \node[tpcblock, below of=plane] (matching) {TPC Plane Matching};
+            \node[emptyblock, below of=hit] (pds_reco1) {};
+            % Reco2 nodes
+            \node[tpcblock, below of=matching] (primary) {TPC \textbf{Primary Cluster Finding}};
+            \node[pdsblock, below of=pds_reco1] (flash) {PDS Clustering \& \textbf{Flash Finding}};
+            \node[eventblock, below of=lowe, yshift=-12cm] (match) {\textbf{TPC-PDS} Matching};
+            \node[eventblock, below of=match] (event) {\textbf{Low-Energy Event}};
+            
+            % Arrows
+            \draw[arrow] (pds)   -- (hit);
+            \draw[arrow] (tpc)   -- (plane);
+            \draw[arrow] (plane) -- (matching);
+            \draw[arrow] (hit)   -- (flash);
+            \draw[arrow] (matching) -- (primary);
+            \draw[arrow] (primary)  |- (match);
+            \draw[arrow] (flash) |- (match);
+            \draw[arrow] (match) -- (event);
+            % Lines. Divide the diagram into two main stages: Reco1 and Reco2
+            \draw[dashed, thick] (-6,-1.5) -- (6,-1.5) node[right, above] {\emph{Reco1}};
+            \draw[dashed, thick] (-6,-10.65) -- (6,-10.65) node[right, above] {\emph{Reco2}};
+    \end{tikzpicture}
+    \caption{Schematic of the low-energy reconstruction workflow, divided into two main stages: \emph{Reco1}, which focuses on hit finding and clustering for both TPC and PDS systems; and \emph{Reco2}, which emphasizes higher-level object formation and the association between TPC and PDS systems to ultimately form low-energy event candidates.\label{fig:RECO_SCHEME}}
+\end{figure}
+
+\emph{Reco1}: Conceptually, this part of the process is designed to provide the common building blocks for subsequent reconstruction stages: the \texttt{hits}. These are localized charge or photon depositions in the \gls{tpc} or \gls{pds}, respectively. As quanta of information, the algorithms that produce them are optimized for efficiency and accuracy by a full team of \gls{larsoft} developers. The \texttt{hits} used in this work are the standard \gls{larsoft} objects produced from the main reconstruction workflow and common to all \gls{dune} studies. Nevertheless, higher-level clustering algorithms have been specifically developed to group these \texttt{hits} into more complex objects that can be used for low-energy event reconstruction.
+
+\iffalse
+\begin{itemize}    
+    \item \textbf{Common Preprocessing}: Both \gls{tpc} and \gls{pds} waveforms undergo a deconvolution step to remove the electronics response and noise spectrum. This process enhances the signal quality and prepares the waveforms for subsequent hit finding.
+    
     \begin{itemize}
-        
-        \item \textbf{Common Preprocessing}: Both \gls{tpc} and \gls{pds} waveforms undergo a deconvolution step to remove the electronics response and noise spectrum. This process enhances the signal quality and prepares the waveforms for subsequent hit finding.
-        
-        \begin{itemize}
-            \item \textbf{TPC Hit Finding}: 
-            The \gls{roi}-trimmed waverforms are fitted to Gaussian Bells and integrated over time windows to form localized \texttt{hits}. These which are stored with time, position, and charge-profile information and form the fundamental building blocks for subsequent reconstruction stages.
-            \item \textbf{TPC Disambiguation}: This step is specifically required for \gls{hd}, where induction wires turn around the central collection plane. This design allows for the reduction of the number of readout channels and simplifies, from a technical point of view, the extraction of the signals. However, it introduces an ambiguity in the hit position reconstruction, as a single readout channel can correspond to multiple physical wire positions (left of right of the collection plane). The disambiguation algorithm uses timing and charge information from all three planes to resolve these ambiguities and assign the correct wire section to each \texttt{hit}.
-            \item \textbf{PDS Deconvolution}: The \gls{pds} waveforms are deconvolved to remove the electronics response and noise spectrum, similar to the \gls{tpc} deconvolution step. This process enhances the signal quality and prepares the waveforms for subsequent hit finding.
-            \item \textbf{PDS Hit Finding}: The \gls{pds} deconvolved waveforms are processed to extract \emph{optical hits} or \texttt{ophits} (integrated photon pulses) with associated time, channel and \gls{pe} information. Instead of a simple Gaussian-fitting, a sliding-window algorithm is used to identify local maxima in the waveform and collect as much of the correlated scintillation light as possible into single \texttt{ophits}. This approach improves the timing and charge resolution of the detected scintillation signals.
-        \end{itemize}
-        
-        \item \textbf{Specific Low-Level Clustering}: After the \texttt{hit} finding step, specific clustering algorithms have been developed to group these low-level objects into more complex structures that can be used for low-energy event reconstruction.
-        \begin{itemize}
-            \item \textbf{TPC Clustering}: The \gls{tpc} \texttt{hits} are grouped ``per-plane'' according to tight space and time constrains to form \texttt{clusters} (see \cref{fig:TPC_CLUSTERING}), which aim to combine all the charge from localized ionisation signals of single particles. This operation is performed for each of the \gls{tpc} planes. The clustering parameters found to maximize completeness while ensuring purity in the context of background are \num{3} adjacent channels and \SI{12.5}{\micro\second} time window (1~tick $=$ \SI{12.5}{\micro\second}). The resulting \texttt{per-plane clusters} contain the weighted average time and wire-position as well as the total charge.
-            \item \textbf{TPC Matching}: The \texttt{per-plane clusters} from the three \gls{tpc} planes are matched together starting from the collection plane and associating the corresponding induction plane clusters based on the shortest time (TPC-plane clocks are synchronized so that the drift time between planes is accounted for). The resulting \texttt{matched clusters} contain information from all three planes and most importantly, a reconstructed 2.5D position $<t,y,z>$.
-        \end{itemize}
+        \item \textbf{TPC Hit Finding}: 
+        The \gls{roi}-trimmed waverforms are fitted to Gaussian Bells and integrated over time windows to form localized \texttt{hits}. These which are stored with time, position, and charge-profile information and form the fundamental building blocks for subsequent reconstruction stages.
+        \item \textbf{TPC Disambiguation}: This step is specifically required for \gls{hd}, where induction wires turn around the central collection plane. This design allows for the reduction of the number of readout channels and simplifies, from a technical point of view, the extraction of the signals. However, it introduces an ambiguity in the hit position reconstruction, as a single readout channel can correspond to multiple physical wire positions (left of right of the collection plane). The disambiguation algorithm uses timing and charge information from all three planes to resolve these ambiguities and assign the correct wire section to each \texttt{hit}.
+        \item \textbf{PDS Deconvolution}: The \gls{pds} waveforms are deconvolved to remove the electronics response and noise spectrum, similar to the \gls{tpc} deconvolution step. This process enhances the signal quality and prepares the waveforms for subsequent hit finding.
+        \item \textbf{PDS Hit Finding}: The \gls{pds} deconvolved waveforms are processed to extract \emph{optical hits} or \texttt{ophits} (integrated photon pulses) with associated time, channel and \gls{pe} information. Instead of a simple Gaussian-fitting, a sliding-window algorithm is used to identify local maxima in the waveform and collect as much of the correlated scintillation light as possible into single \texttt{ophits}. This approach improves the timing and charge resolution of the detected scintillation signals.
     \end{itemize}
-
-    \item \emph{Reco2}: This second part of the reconstruction process focuses on higher-level object formation and the association between \gls{tpc} and \gls{pds} systems. The following operations are performed:
+    
+    \item \textbf{Specific Low-Level Clustering}: After the \texttt{hit} finding step, specific clustering algorithms have been developed to group these low-level objects into more complex structures that can be used for low-energy event reconstruction.
+    
     \begin{itemize}
-        \item \textbf{PDS Flash Finding}: The \texttt{ophits} are grouped following a simpler clustering logic with a much broader space range to account for the larger spread of scintillation light. Contrary to the \gls{tpc} clustering scheme, the algorithm implemented for the \gls{pds} relies on fixed time and distance parameters that collect \texttt{adjacent ophit} surrounding a \texttt{trigger ophit} with the highest \gls{pe} count. This algorithm contemplates the possibility of collecting into more than one flash the same adjacent hits. This feature can be turned on or off depending on the analysis needs. The resulting \texttt{flashes} contain time, position and total \gls{pe} information for subsequent matching with \gls{tpc} objects (see \cref{fig:FLASH_FINDING}).
-        
-        \item \textbf{Low-Energy Event Finding}: The \emph{Reco1} \gls{tpc} \texttt{cluster} are further grouped into \texttt{lowe events} containing one \texttt{primary} and any number of found \texttt{adjacent clusters} as well as a candidate list of matching \gls{pds} \texttt{flashes}:
-        \begin{itemize}
-            \item \textbf{TPC Adjacent Cluster Finding}: Each \texttt{cluster} is scanned for smaller \texttt{adjacent clusters} within a radial distance of \SI{1}{\meter} (see \cref{fig:ADJ_CLUSTER_FINDING}). The resulting \texttt{primary cluster} (the highest charge cluster within \SI{1}{\meter}) is the fundamental component to form the \texttt{lowe event}.
-            \item \textbf{TPC-PDS Flash Matching}: Each \texttt{primary cluster} is assigned to a list of flashes via flash-matching algorithm which takes into account the reconstructed vertices of the clusters and the time and position of the flashes (find more details to the matching algorithm in~\cref{sec:FLASH_MATCHING}).
-        \end{itemize}
+        \item \textbf{TPC Clustering}: The \gls{tpc} \texttt{hits} are grouped ``per-plane'' according to tight space and time constrains to form \texttt{clusters} (see \cref{fig:TPC_CLUSTERING}), which aim to combine all the charge from localized ionisation signals of single particles. This operation is performed for each of the \gls{tpc} planes. The clustering parameters found to maximize completeness while ensuring purity in the context of background are \num{3} adjacent channels and \SI{12.5}{\micro\second} time window (1~tick $=$ \SI{12.5}{\micro\second}). The resulting \texttt{per-plane clusters} contain the weighted average time and wire-position as well as the total charge.
+        \item \textbf{TPC Matching}: The \texttt{per-plane clusters} from the three \gls{tpc} planes are matched together starting from the collection plane and associating the corresponding induction plane clusters based on the shortest time (TPC-plane clocks are synchronized so that the drift time between planes is accounted for). The resulting \texttt{matched clusters} contain information from all three planes and most importantly, a reconstructed 2.5D position $<t,y,z>$.
     \end{itemize}
 \end{itemize}
+\fi
 
-The clustering algorithms developed for this purpose are detailed in~\cref{sec:CLUSTERING_TPC,sec:CLUSTERING_PDS} and can be found in the following repositories: \href{https://github.com/DUNE/duneopdet/tree/develop/duneopdet/SolarNuUtils}{duneopdet} \& \href{https://github.com/DUNE/dunereco/tree/develop/dunereco/LowEUtils}{dunereco}; as well as the associated producer modules: \href{https://github.com/DUNE/duneopdet/blob/develop/duneopdet/OpticalDetector/SolarOpFlash_module.cc}{SolarOpFlash\_module.cc} \& \href{https://github.com/DUNE/dunereco/blob/develop/dunereco/LowEUtils/SolarCluster_module.cc}{SolarCluster\_module.cc}. A custom solar workflow leading to the production of these reconstructed objects has been included in the standard production workflow files:
+\emph{Reco2}: This second part of the reconstruction process focuses on higher-level object formation and the association between \gls{tpc} and \gls{pds} systems.
 
+\iffalse
+The following operations are performed:
 \begin{itemize}
-    \item \href{https://github.com/DUNE/dunesw/blob/develop/fcl/dunefd/reco/solar_reco_dune10kt_1x2x6.fcl}{solar\_reco\_dune10kt\_1x2x6.fcl}
-    \item \href{https://github.com/DUNE/dunesw/blob/develop/fcl/dunefdvd/reco/solar_reco_dunevd10kt_1x8x14_3view_30deg.fcl}{solar\_reco\_dunevd10kt\_1x8x14\_3view\_30deg.fcl}.
+    \item \textbf{TPC Adjacent Cluster Finding}: Each \texttt{cluster} is scanned for smaller \texttt{adjacent clusters} within a radial distance of \SI{1}{\meter} (see \cref{fig:ADJ_CLUSTER_FINDING}). The resulting \texttt{primary cluster} (the highest charge cluster within \SI{1}{\meter}) is the fundamental component to form the \texttt{lowe event}.
+    \item \textbf{PDS Flash Finding}: The \texttt{ophits} are grouped following a simpler clustering logic with a much broader space range to account for the larger spread of scintillation light. Contrary to the \gls{tpc} clustering scheme, the algorithm implemented for the \gls{pds} relies on fixed time and distance parameters that collect \texttt{adjacent ophit} surrounding a \texttt{trigger ophit} with the highest \gls{pe} count. This algorithm contemplates the possibility of collecting into more than one flash the same adjacent hits. This feature can be turned on or off depending on the analysis needs. The resulting \texttt{flashes} contain time, position and total \gls{pe} information for subsequent matching with \gls{tpc} objects (see \cref{fig:FLASH_FINDING}).
+    \item \textbf{TPC-PDS Flash Matching}: Each \texttt{primary cluster} is assigned to a list of flashes via flash-matching algorithm which takes into account the reconstructed vertices of the clusters and the time and position of the flashes (find more details to the matching algorithm in~\cref{sec:FLASH_MATCHING}).
+    \item \textbf{Low-Energy Event Finding}: Finally, the \texttt{primary cluster} and its associated \texttt{adjacent clusters} are grouped together with the matched flashes to form a \texttt{low-energy event candidate}. These objects contain all the relevant information from both the \gls{tpc} and \gls{pds} systems for subsequent physics analysis.
 \end{itemize}
+\fi
 
-The calibration and characterization of the \gls{cc} neutrino signal are based on the true information of the main electron of the interaction. If not otherwise mentioned, the plots in this section are produced from a MARLEY generated \gls{cc} neutrino sample with central \gls{apa} background. The first step of the reconstruction process has already happened when clustering the hits of the \gls{tpc} and \gls{pds} detector subsystems in the simulation's \emph{reco1} stage (see \cref{sec:EVENT_DEFINITION}). Next, we evaluate the detection efficiency and completeness of the collection- induction-matched \gls{tpc} clusters (see \cref{sec:DETECTION_EFFICIENCY}). Subsequently, the event electron is corrected in charge for the drift attenuation before computing a hit-dependent calibration factor that recover the particle's original kinetic energy (see \cref{sec:ELECTRON_CALIBRATION}). Finally, the average calibration factor is applied to all adjacent clusters of the event candidate and the total neutrino energy is computed from four different algorithms (see \cref{sec:NEUTRINO_CALIBRATION}). During the \gls{tpc} calibration process, the drift coordinate is assumed from truth. A discussion on how the intrinsic background contamination of the detector affects the signal reconstruction at these low energies and the effects on drift coordinate resolution (as a result of \gls{tpc}-\gls{pds} match) are presented in~\cref{sec:RESULTS}.
+The clustering algorithms developed for this purpose are detailed in~\cref{sec:CLUSTERING_TPC,sec:CLUSTERING_PDS} and can be found in the following repositories: \href{https://github.com/DUNE/duneopdet/tree/develop/duneopdet/SolarNuUtils}{duneopdet} \& \href{https://github.com/DUNE/dunereco/tree/develop/dunereco/LowEUtils}{dunereco}; as well as the associated producer modules: \href{https://github.com/DUNE/duneopdet/blob/develop/duneopdet/OpticalDetector/SolarOpFlash_module.cc}{SolarOpFlash\_module.cc} \& \href{https://github.com/DUNE/dunereco/blob/develop/dunereco/LowEUtils/SolarCluster_module.cc}{SolarCluster\_module.cc}. A custom solar workflow leading to the production of these reconstructed objects has been included in the standard production workflow files: \href{https://github.com/DUNE/dunesw/blob/develop/fcl/dunefd/reco/solar_reco_dune10kt_1x2x6.fcl}{solar\_reco\_dune10kt\_1x2x6.fcl} \& \href{https://github.com/DUNE/dunesw/blob/develop/fcl/dunefdvd/reco/solar_reco_dunevd10kt_1x8x14_3view_30deg.fcl}{solar\_reco\_dunevd10kt\_1x8x14\_3view\_30deg.fcl}.
 
 \input{3.Reconstruction/3.1Reconstruction}
 \input{3.Reconstruction/3.2Reconstruction}
