@@ -1,11 +1,24 @@
 \subsection{Electron-Lifetime Correction}\label{sec:ELECTRON_LIFETIME}
-\gls{tpc} hits are first grouped into spatial clusters using a dedicated clustering algorithm. Each event contains a \textbf{main cluster}, corresponding to the primary outgoing electron, and zero or more \textbf{adjacent clusters}, interpreted as gamma-induced ``blips''. The first step in calibration involves correcting the total ionization charge of each cluster for the electron-lifetime attenuation in the \gls{lar} (see~\cref{eq:ELECTRON_LIFETIME}).
+\gls{tpc} hits are first grouped into spatial clusters using a dedicated clustering algorithm. Each event contains a \textbf{main cluster}, corresponding to the primary outgoing electron, and zero or more \textbf{adjacent clusters}, interpreted as gamma-induced ``blips''. 
 
-\begin{equation}
-    \dfrac{Q_\text{raw}(n_\text{hit})}{E^\text{truth}_e} = F_0(n_\text{hit}) \cdot \exp\left(\frac{t^\text{drift}}{\tau_e}\right),
-\end{equation}\label{eq:ELECTRON_LIFETIME}
+In order to calibrate the charge attributed to each of these clusters, the first conceptual step is to understand that there is a direct correlation between the particle's energy and the collected charge. Keeping aside the differences in electron yield that each kind of particle produces and focusing on the main electron of the \gls{cc} $\nu-\text{Ar}$ interaction, we identify the main cluster as the one with the highest charge and assume that it corresponds to a fully-contained electron. This assumption allows us to use the known true energy of the main electron (from simulation) as a reference for calibrating the charge-to-energy conversion factor:
 
-where \( Q_{\text{raw}} \) is the observed (uncorrected) cluster charge, \( E^\text{truth}_e \) is the true main electron energy of the interaction, \( F_0 \) is the charge-to-energy correction factor, \( t^\text{drift} \) is the true drift time of the electron, and \( \tau_e \) is the electron lifetime measured here independently and cross-checked against the simulation input.
+\begin{align}
+    Q^{\text{coll}}(n_\text{hit}) = f\left(E^{\text{true}}_e,\,\overrightarrow{p}\,,n_\text{hit}\right) \cdot E^{\text{true}}_e\,.
+\end{align}
+
+Here, \( Q^{\text{coll}} \) is the charge collected in the main cluster, \( E^{\text{true}}_e \) is the true energy of the main electron, and \( f \) is the theoretical charge-to-energy conversion factor that depends on the true energy, the vertex of the electron's interaction (represented by \( \overrightarrow{p} \)), and the number of hits in the resulting cluster (\( n_\text{hit} \)). 
+
+From an experimental perspective, the charge collected in the main cluster is affected by various factors, that are a priory unknown, including the particles energy and position. We define an effective charge-to-energy conversion factor, \( F_0(n_\text{hit})\), that encapsulates all these effects as a function of the number of hits in the cluster:
+
+\begin{align}
+    F_0(n_\text{hit}) = \dfrac{1}{\Delta t}\int^{\Delta t}_0\dfrac{Q^\text{corr}(t\,,n_\text{hit})}{E^\text{true}_e}dt \quad &\text{with} \quad Q^\text{corr}(n_\text{hit}) = \dfrac{Q^\text{coll}(n_\text{hit})}{e^{-\frac{t}{\tau_e}}}\,. \\
+    E^\text{cluster}_e &= F_0(n_\text{hit}) \cdot Q^\text{corr}(n_\text{hit})\,.
+\end{align}\label{eq:ELECTRON_LIFETIME}
+
+Here \( Q^\text{corr} \) is the lifetime-corrected cluster charge, \( E^\text{cluster}_e \) is the computed electron energy for the cluster, \( \Delta t \) is the maximum drift time of the electron, and \( \tau_e \) is the electron lifetime measured here independently and cross-checked against the simulation input.
+
+The first step in calibration involves converting the total collected charge of each cluster to a computed electron energy by correcting for the electron-lifetime attenuation in the \gls{lar} (see~\cref{eq:ELECTRON_LIFETIME}). \Cref{fig:DRIFT_ATTENUATION_CORRECTION} shows the result of this procedure.
 
 \begin{figure}[ht!]
     \centering
@@ -14,13 +27,7 @@ where \( Q_{\text{raw}} \) is the observed (uncorrected) cluster charge, \( E^\t
     \caption[width=1\linewidth]{Drift attenuation correction for \gls{hd} (left) and \gls{vd} (right).\label{fig:DRIFT_ATTENUATION_CORRECTION}}
 \end{figure}
 
-Assuming the main cluster corresponds to a fully-contained electron, we take its known true energy (from simulation) as a reference and compute the charge-to-energy conversion factor for each $(n_\text{hit})$ threshold. Additionally, to assess the impact of this assumption, with the goal of characterizing signal clusters in the context of background which limits the clustering parameters, one can also investigate a ``cheated charge''. This is computed for all clusters, adding the surrounding charge that has been backtracked to the main electron of the interaction. A calibration based on this cheated clustering gives us an understanding of the losses that arise from a limited clustering ability in the context of background.
-
-\begin{equation}
-    E_{\text{cluster}} = \alpha(n_{\text{hit}}, E_{\text{true}}) \cdot Q_{\text{corr}}.
-\end{equation}
-
-After the truth drift correction has been applied to the data, the charge correction factor is immediately obtained.
+\Cref{fig:CHARGE_CORRECTION_FACTOR} shows the charge convertion factor as a function of the clusters $n_\text{hit}$. Due to the nature of clustering, the first points of the distribution are affected by threshold effects, which can be read from the plot by analysing the large error bars. Intermediate $n_\text{hit}$ clusters have the lowest charge-to-energy ratio, as they are more likely to be fully contained. With increasing $n_\text{hit}$, the comp`leteness decreases, leading to a higher charge-to-energy ratio. To assess the impact of this calibration, with the goal of characterizing signal clusters in the context of background with limited the clustering efficiency, one can also investigate a ``cheated charge''. This is computed for all clusters, adding the surrounding charge that has been backtracked to the main electron of the interaction. A calibration based on this cheated clustering gives us an understanding of the losses that arise from a limited clustering ability.
 
 \begin{figure}[ht!]
     \centering
@@ -29,12 +36,10 @@ After the truth drift correction has been applied to the data, the charge correc
     \caption{Per hit correction factor distributions. (left) Primary cluster charge. (right) Cheated electron cluster charge.\label{fig:CHARGE_CORRECTION_FACTOR}}
 \end{figure}
 
-\Cref{fig:CHARGE_CORRECTION_FACTOR} shows the charge correction factor distributions for both the main cluster and the cheated electron cluster. The correction factor varies with increasing number of hits. Due to the nature of clustering, the first two points of the distribution are affected by threshold effects and present a high charge-to-energy ratio to compensate for the lack of completeness. Intermediate hit clusters have the lowest charge-to-energy ratio, as they are more likely to be fully contained within a few hits. As the number of hits increases, the clustering efficiency decreases, leading to a higher charge-to-energy ratio. This is because higher energy electrons produce more extensive ionization tracks, which are more challenging to fully capture within a single cluster.
-
 This trend is well-described by an exponential plus logistic function. The functional form used to fit the charge correction factor as a function of the number of hits is given by:
 
-\begin{equation}
-    \alpha(n_{\text{hit}}) = a \cdot \exp^{-b \cdot n_{\text{hit}}} + \dfrac{c}{1 + \exp^{(-d \cdot n_{\text{hit}})}}\,,
-\end{equation}
+\begin{align}
+   F_0(n_{\text{hit}}) = a \cdot e^{-b \cdot n_{\text{hit}}} + \dfrac{c}{1 + e^{-d \cdot n_{\text{hit}}}}\,,
+\end{align}
 
 where \( a, b, c, d \) are fit's exponential amplitude, decay, limiting constant, and sigmoid growth parameters, respectively. This function captures the initial rapid decrease in the correction factor for low hit counts, followed by a more gradual increase at higher hit counts, reflecting the underlying physics of charge collection and clustering in the detector.

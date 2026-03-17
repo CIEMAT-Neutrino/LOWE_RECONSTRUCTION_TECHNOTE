@@ -1,11 +1,12 @@
 \subsection{Electron Energy Calibration}\label{sec:ELECTRON_CALIBRATION}
 Even after lifetime and charge calibration, small systematic biases may remain in the reconstructed electron energy due to recombination modelling, imperfect response, or clustering inefficiencies. We apply a linear correction to account for this residual offset:
 
-\begin{equation}
-E^\text{reco}_{e} = a \cdot E^\text{true}_{e} + b\,.\label{eq:ELECTRON_CALIBRATION}
-\end{equation}
+\begin{align}
+E^\text{cluster}_{e} = \alpha\left(E^{\text{true}}_e,\,\overrightarrow{p}\,,n_\text{hit}\right) \cdot E^\text{true}_{e} &+ \beta\left(E^{\text{true}}_e,\,\overrightarrow{p}\,,n_\text{hit}\right)
+\label{eq:ELECTRON_COMPUTATION}
+\end{align}
 
-where \( a \) and \( b \) are derived from the linear fits to the simulated \( E_{\text{true}} \) versus \( E_{\text{reco}} \) distributions as shown in \cref{fig:CHARGE_CALIBRATION}.
+Here, \( E^\text{cluster}_{e} \) is the computed electron energy for the cluster, \( E^\text{true}_{e} \) is the true energy of the main electron, and \( \alpha \) and \( \beta \) are the linear correction parameters that depend on the true energy, the vertex of the electron's interaction (represented by \( \overrightarrow{p} \)), and the number of hits in the resulting cluster (\( n_\text{hit} \)). These parameters are determined by fitting the distribution of \( E^\text{cluster}_{e} \) versus \( E^\text{true}_{e} \) for the main clusters across the dataset.
 
 \begin{figure}[ht!]
     \centering
@@ -13,7 +14,7 @@ where \( a \) and \( b \) are derived from the linear fits to the simulated \( E
     \caption[width=1\linewidth]{Charge calibration for the main electron clusters. (left) Comparison between true and reconstructed energy before linear fit calibration. (right) Comparison between true and reconstructed energy after linear fit calibration. Dashed line shows the values for which $E_\text{reco} = E_\text{true}$ as reference.\label{fig:CHARGE_CALIBRATION}}
 \end{figure}
 
-The calibration is performed separately for the main electron cluster and the cheated electron cluster. The calibration factor is computed as a function of the number of hits in the cluster, which serves as a proxy for the electron energy.
+As shown in \cref{fig:CHARGE_CALIBRATION_PARAMETERS}, the resulting calibration parameters approach unity for \( a \) and continuously rise for \( b \) as the number of hits increases, indicating worse electron clustering for higher-energy particles. There is no significant difference between the \gls{hd} and \gls{vd} geometries in terms of these calibration parameters.
 
 \begin{figure}[ht!]
     \centering
@@ -22,4 +23,12 @@ The calibration is performed separately for the main electron cluster and the ch
     \caption[width=1\linewidth]{Calibration parameters as a function of number of hits in the cluster for (left) \gls{hd} and (right) \gls{vd}.\label{fig:CHARGE_CALIBRATION_PARAMETERS}}
 \end{figure}
 
-As shown in \cref{fig:CHARGE_CALIBRATION_PARAMETERS}, the calibrated parameters approach unity for \( a \) and continuously rise for \( b \) as the number of hits increases, indicating worse electron clustering for higher--energy particles. There is no significant difference between the \gls{hd} and \gls{vd} geometries in terms of these calibration parameters.
+The final calibrated electron energy, \( E^\text{reco}_e \), is obtained by applying the inverse of the linear correction to the cluster energy, effectively removing the bias and improving the agreement between reconstructed and true energies, as illustrated in \cref{fig:CHARGE_CALIBRATION}.
+
+\begin{align}
+E^\text{reco}_e &= \dfrac{E^\text{cluster}_e - b(n_\text{hit})}{a(n_\text{hit})} \\
+\text{with } \quad \{a(n_\text{hit}),\,b(n_\text{hit})\} &= \mathcal{A}\left[\alpha\left(E^{\text{true}}_e,\,\overrightarrow{p}\,,n_\text{hit}\right),\,\beta\left(E^{\text{true}}_e,\,\overrightarrow{p}\,,n_\text{hit}\right)\right]\,. \nonumber
+\label{eq:ELECTRON_CALIBRATION}
+\end{align}
+
+\Cref{eq:ELECTRON_CALIBRATION} shows the final step of the electron energy calibration, where \( \mathcal{A} \) represents the fitting procedure used to determine the parameters \( a(n_\text{hit}) \) and \( b(n_\text{hit}) \) from the distributions of \( \alpha \) and \( \beta \) as functions of the number of hits in the cluster. This calibration ensures that the reconstructed electron energy is as close as possible to the true energy, accounting for any systematic biases that may arise from detector effects or reconstruction inefficiencies.

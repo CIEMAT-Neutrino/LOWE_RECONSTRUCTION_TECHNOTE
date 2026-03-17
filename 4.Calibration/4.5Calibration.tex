@@ -1,11 +1,5 @@
 \subsection{Neutrino Energy Calibration\label{sec:SIGNAL_SMEARING}}
-Due to the missing nuclear binding energy and undetected soft particles, the reconstructed neutrino energy is expected to systematically underestimate the true value. As a final step to the reconstruction process, all energies (\textbf{TotalEnergy}, \textbf{SelectedEnergy}, \textbf{SolarEnergy} and \textbf{ClusterEnergy}) are calibrated with a linear fit to compensate for systematic losses in the previous clustering or calibration processes. This final global correction is applied to bring the distribution into agreement with the simulation truth:
-
-\begin{equation}
-    E^\text{reco}_{\nu} = a \cdot E^\text{true}_{\nu} + b\,.\label{eq:NEUTRINO_CALIBRATION}
-\end{equation}
-
-with \( a \) and \( b \) obtained from a linear fit to the true versus reconstructed neutrino energy spectrum of the \gls{mc} sample as shown in \cref{fig:NEUTRINO_ENERGY_SMEARING}.
+Due to the missing nuclear binding energy and undetected soft particles, the reconstructed neutrino energy is expected to systematically underestimate the true value. As a final step to the reconstruction process, all energies (\textbf{TotalEnergy}, \textbf{SelectedEnergy}, \textbf{SolarEnergy} and \textbf{ClusterEnergy}) are calibrated with a linear fit to compensate for systematic losses in the previous clustering or calibration processes. This final global correction is applied to bring the distribution into agreement with the simulation truth following a process equivalent to the one described in \cref{sec:ELECTRON_CALIBRATION} for the main electron cluster. The resulting neutrino energy smearing is shown in \cref{fig:NEUTRINO_ENERGY_SMEARING}.
 
 \begin{figure}[ht!]
     \centering
@@ -13,4 +7,4 @@ with \( a \) and \( b \) obtained from a linear fit to the true versus reconstru
     \caption[width=1\linewidth]{\gls{hd} Neutrino energy smearing from the calibrated \emph{SelectedEnergy} signal.\label{fig:NEUTRINO_ENERGY_SMEARING}}
 \end{figure}
 
-\Cref{fig:NEUTRINO_ENERGY_SMEARING} shows the neutrino energy smearing for the \emph{SelectedEnergy} algorithm after the final linear calibration. The distribution is centered around the diagonal, indicating that the reconstructed energy is in good agreement with the true energy. The width of the distribution gives an indication of the energy resolution of the reconstruction algorithm, which will be further discussed in \cref{sec:ENERGY_RESOLUTION}.
+The distribution is centered around the diagonal, indicating that the reconstructed energy is in good agreement with the true energy. The off-diagonal bands correspond to events where the reconstructed energy is significantly different from the true energy, which can be attributed to various factors such as undetected particles, misreconstruction, or fluctuations in the energy deposition. The overall shape of the distribution provides insight into the resolution and bias of the neutrino energy reconstruction, which is crucial for accurate physics analyses.
