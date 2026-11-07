@@ -1,7 +1,5 @@
-% !TEX root = ~/Code/TN_LOWE_RECONSTRUCTION/main.tex
+% !TEX root = ../main.tex
 \section{Low-Energy Event Reconstruction}\label{sec:RECONSTRUCTION}
-% Delete the text and write your Method(s) here:
-%------------------
 The signal waveforms are passed forward to the reconstruction routines. A peak finding algorithm fits Gaussian distributions to the signal waveforms, where each successful fit is formed into an object known as a \gls{tpc} \textit{hit}. The area under all the \gls{tpc} hits is proportional to the energy deposited by the charge particles as they propagate through the liquid argon volume.  For the horizontal drift processing chain, a disambiguation routine is then applied to the induction plane hits to deduce which drift volume they originated from. This routine combines spatial and timing information of all hits in all planes simultaneously to maximize performance. The \gls{tpc} hits are then passed forward to the higher-level reconstruction routines.
 
 As a next step, after the generation, propagation and detector simulation of the \gls{mc} workflow, the reconstruction (\emph{Reco}) step for these studies includes basic hit-finding algorithm and clustering schemes that applies both to the \gls{tpc} and \gls{pds}. This \emph{Reco} stage typically is subdivided into two:
