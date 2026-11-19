@@ -21,14 +21,6 @@ The next parameters to evaluate are the completeness and purity of the main clus
 
 \gls{dune}'s solar analysis workflow starts with calibrating the clustered hits from the \gls{cc} interaction of simulated neutrino events with the \gls{marley} generator. The \gls{cc} channel is chosen to be the default based on its dominant cross-section in the low-energy range, as well as its richer topology. All energy and spacial resolution results presented here should be considered an underestimation (or at least compatible) to the ones results for the \gls{es} channel. Each cluster's information is reduced to a point-like object characterized by its number of hits (\texttt{nhits}), \texttt{charge} (summed over the charge of the individual hits) and a 2.5D-reconstructed vertex $<t, y, z>$ computed from the charge-weighted average of the individual hits.
 
-\begin{table}[ht!]
-    \centering
-    Adjacent Cluster Distribution - Vertex Distance \SI{100}{\centi\meter} \\
-    \vspace{0.15cm}
-    \input{Tables/marley_final_adjacent_cluster_counts_distance100_signal_intrinsic_external.tex}
-    \caption{Average number of adjacent clusters per primary signal cluster for \SI{100}{\centi\meter} distance, split by origin (signal de-excitation products, intrinsic and external background).\label{tab:ADJCLUSTERNUM_RADIAL_100_RECO}} 
-\end{table}
-
 For the purpose of this work, secondary low-energy events coming from a single neutrino interaction are identified using truth-level information and ignored in favour of the one with the highest charge in the primary cluster. This is to ensure that the reconstruction performance is evaluated for the most complete reconstruction object in any interaction but in any physics analysis these should be kept and treated as part of the signal or even background samples.
 
 \begin{table}[ht!]
