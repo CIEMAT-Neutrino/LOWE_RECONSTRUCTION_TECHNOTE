@@ -1,7 +1,7 @@
 \subsection{Neutrino Energy Reconstruction}\label{sec:NEUTRINO_CALIBRATION}
 In this section we describe the different methods used to reconstruct the neutrino energy from the main electron cluster and the adjacent clusters. We present four reconstruction algorithms: \textbf{TotalEnergy}, \textbf{SelectedEnergy}, \textbf{SolarEnergy} and \textbf{ClusterEnergy} which will be compared in terms of energy resolution in~\cref{sec:ENERGY_RESOLUTION}.
 
-The first attempt in computing the neutrino energy is to add the main electron's lifetime-corrected and the charge calibrated energy (as described in \cref{sec:ELECTRON_CALIBRATION}) to the energies of all adjacent clusters (up to \SI{1}{\meter}). The adjacent clusters are assumed to be gamma-induced ``blips'' and are calibrated using the same charge calibration factor as the main electron. The total neutrino energy is computed as:
+The first attempt in computing the neutrino energy is to add the main electron's lifetime-corrected and the charge calibrated energy (as described in \cref{sec:ELECTRON_CALIBRATION}) to the energies of all adjacent clusters (up to \SI{1}{\meter}). The adjacent clusters, which are not uniquely assigned to one primary cluster, are assumed to be gamma-induced ``blips'' and are calibrated using the same charge calibration factor as the main electron. The total neutrino energy is computed as (before the final linear calibration of \cref{sec:SIGNAL_SMEARING}, which has the form $E^\text{reco}_\nu \to a\,E^\text{reco}_\nu + b$ for every algorithm):
 
 \begin{equation}
     E^\text{reco}_{\nu} = E_{e}^{\text{reco}} + \sum_i E_{\text{adj, i}}^{\text{reco}}\,.\label{eq:NEUTRINO_CALIBRATION}
@@ -13,31 +13,44 @@ This strategy is the most obvious approach for neutrino energy reconstruction. W
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/Reco/adjcl_selection_hd_1x2x6_centralapa_marley_official_adjclr_adjclcharge_signal_logz_hist2d.png}
+    \includegraphics[width=\linewidth]{Images/Reco/adjcl_selection_hd_1x2x6_centralapa_marley_final_adjclr_adjclcharge_signal_logz_hist2d.png}
     \caption[width=1\linewidth]{Distribution of the adjacent clusters charge and distance to the main electron cluster.\label{fig:ADJACENT_CLUSTER_RADIUS_CHARGE}}
 \end{figure}
 
-The next solution is to apply a selection on the adjacent clusters (\textbf{SelectedEnergy} algorithm), which are assumed to be gamma-induced ``blips''. The selection is based on the adjacent cluster charge and distance to the main electron cluster. The adjacent clusters are selected if they have a charge above a certain threshold and are within a certain distance to the main electron cluster. The thresholds are tuned to maximize the signal over background ratio. \cref{fig:ADJACENT_CLUSTER_RADIUS_CHARGE} shows the distribution of the adjacent clusters charge and distance to the main electron cluster and selection thresholds.
+The next solution is to apply a selection on the adjacent clusters (\textbf{SelectedEnergy} algorithm), which are assumed to be gamma-induced ``blips''. The selection is based on the adjacent cluster charge and distance to the main electron cluster: an adjacent cluster is retained in the sum if it lies closer to the primary vertex than a distance limit \emph{or} carries more charge than a charge limit. This keeps the clusters close to the primary vertex or with a high charge, which are dominated by the de-excitation photons of the interaction, and drops the more distant, low-charge clusters that are predominantly radiological background. The two limits are optimised independently for each detector configuration by scanning a predefined range of values to maximise the charge-weighted signal-to-background significance $\sum Q_S/\sqrt{\sum Q_B}$ of the selected adjacent clusters. \cref{fig:ADJACENT_CLUSTER_RADIUS_CHARGE} shows the distribution of the adjacent clusters charge and distance to the main electron cluster and the selection boundary.
 
 \begin{table}[ht!]
     \centering
     \begin{tabular}{lcc}
         \hline
         \textbf{Configuration} & \textbf{Charge}     & \textbf{Distance} \\ \hline
-        hd\_1x2x6\_centralAPA  & \SI{275}{\ADC\tick} & \SI{12.1}{\centi\meter} \\
-        hd\_1x2x6\_lateralAPA  & \SI{309}{\ADC\tick} & \SI{11.0}{\centi\meter} \\
-        vd\_1x8x14\_3view\_30deg\_nominal  & \SI{304}{\ADC\tick} & \SI{13.6}{\centi\meter} \\
-        vd\_1x8x14\_3view\_30deg\_shielded & \SI{308}{\ADC\tick} & \SI{17.6}{\centi\meter} \\
+        hd\_1x2x6\_centralAPA  & \SI{273.7}{\ADC\tick} & \SI{11.9}{\centi\meter} \\
+        hd\_1x2x6\_lateralAPA  & \SI{306.0}{\ADC\tick} & \SI{12.3}{\centi\meter} \\
+        vd\_1x8x14\_3view\_30deg\_nominal  & \SI{303.9}{\ADC\tick} & \SI{13.5}{\centi\meter} \\
+        vd\_1x8x14\_3view\_30deg\_shielded & \SI{308.6}{\ADC\tick} & \SI{17.6}{\centi\meter} \\
         \hline
     \end{tabular}
-    \caption{Adjacent cluster selection thresholds for the different background scenarios.\label{tab:ADJACENT_CLUSTER_SELECTION_THRESHOLDS}}
+    \caption{Adjacent cluster selection limits for the different background scenarios. An adjacent cluster is selected if its distance to the vertex is below the distance limit or its charge is above the charge limit.\label{tab:ADJACENT_CLUSTER_SELECTION_THRESHOLDS}}
 \end{table}
 
-\Cref{tab:ADJACENT_CLUSTER_SELECTION_THRESHOLDS} summarizes the different thresholds used for the adjacent cluster selection, based on the background scenario. The selected adjacent clusters are then summed to the primary cluster energy to obtain the reconstructed neutrino energy (\textbf{SelectedEnergy}).
+\Cref{tab:ADJACENT_CLUSTER_SELECTION_THRESHOLDS} summarizes the different thresholds used for the adjacent cluster selection, based on the background scenario. The selected adjacent clusters are then summed to the primary cluster energy to obtain the reconstructed neutrino energy (\textbf{SelectedEnergy}). In the \gls{hd} central and \gls{vd} nominal configurations the selection keeps about half of the de-excitation gamma energy, \SI{55}{\percent} (\SI{50}{\percent}) in \gls{hd} (\gls{vd}) averaged over \qtyrange{4}{20}{\mega\electronvolt}, with an energy-weighted purity of \SI{93}{\percent} (\SI{63}{\percent}).
 
-A more advanced version of this last algorithm is to apply machine learning methods to the adjacent clusters. The \textbf{SolarEnergy} algorithm is trained on the main cluster properties and the average adjacent cluster features two add one of two total adjacent cluster energy values: \qtylist{4.47;6.41}{\mega\electronvolt}. The algorithm uses a random forest regressor, which predicts the effective energy gone to the adjacent clusters, which if subsequently added to the main electron energy to obtain the result. 
+A more advanced algorithm is \textbf{SolarEnergy}, which replaces the adjacent-cluster sum by an energy offset that describes the de-excitation of the final-state nucleus. Each cluster passes three steps: a signal-background classifier decides whether the cluster is compatible with a \gls{cc} interaction; for the signal-like clusters, a de-excitation classifier chooses the offset; and the final linear calibration (\cref{sec:SIGNAL_SMEARING}) gives the neutrino energy. Because it replaces the adjacent-cluster sum by a nuclear offset, it does not add the energy of background clusters near the signal to the neutrino estimate.
 
-Hereby, the problem is simplified to a binary choice. This is motivated by the two main calibration lines from the \gls{cc} interaction displayed in~\cref{fig:MARLEY_CC_INTERACTION}. The score of the random forest regressor, which provides an AUC of \num{0.77} for the test sample, means that the algorithm is able to distinguish between the two samples with a good efficiency. The random forest regressor is trained on the following features:
+\paragraph{Signal-background classifier.} The de-excitation offsets applied in the next step describe the energy balance of a \gls{cc} interaction and have no meaning for clusters produced by other processes. Applied to an external gamma, a neutron capture or a radiological decay, they shift the cluster up by \SI{4.47}{\mega\electronvolt} or \SI{6.41}{\mega\electronvolt} and move part of the background into the analysis windows. The first step is therefore a random forest that separates \gls{cc} neutrino clusters from background clusters. Clusters classified as background-like receive no offset and are removed from the solar analyses; clusters classified as signal-like proceed to the de-excitation classifier. The classifier is trained on the clusters produced by the \gls{cc} neutrino interaction against the external gamma, external neutron and intrinsic radiological samples of each configuration, processed with the same chain as the analyses, and only clusters with a reconstructed energy above \SI{3}{\mega\electronvolt} enter. The inputs are the observables of the de-excitation classifier listed below together with the photoelectrons and the number of optical hits of the matched flash. Signal and background carry equal total weight, and each background sample an equal share of the background weight. To keep the background estimates unbiased, the events are split in two halves, a classifier is trained on each half, and every cluster is scored by the classifier trained on the other half.
+
+The selection favours completeness over purity. The classifier decides only for clusters whose offset-inclusive \emph{SolarEnergy} is at least \SI{12}{\mega\electronvolt}, with a threshold that keeps \SI{95}{\percent} of the \gls{cc} neutrino clusters above that gate; below the gate it removes no cluster. A base score threshold with the same \SI{95}{\percent} completeness over the true neutrino-energy interval \qtyrange{6}{20}{\mega\electronvolt} is also defined to characterise the classifier. The held-out area under the ROC curve is \numrange{0.919}{0.921} in \gls{hd} and \numrange{0.909}{0.924} in \gls{vd}. In \texttt{hd\_1x2x6\_centralAPA}, \SI{88}{\percent} of external-gamma clusters and about half of the neutron clusters pass the base threshold, compared with \SI{9}{\percent} of the radiological clusters, so the classifier alone does not remove most of the external gamma contamination and the fiducial volume and later event selection remain important. \Cref{fig:SB_CLASSIFIER} shows the input importance and the score distributions.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.55\linewidth]{Images/Reco/signal_background_importance_hd_1x2x6_centralapa_marley_final_feature_importance_config_scan.png}
+    \includegraphics[width=.43\linewidth]{Images/Reco/signal_background_discriminant_hd_1x2x6_centralapa_marley_final_label_population_all_subtract_logy_hist1d.png}
+    \caption[width=1\linewidth]{Signal-background stage of \textbf{SolarEnergy} in the \seqsplit{hd\_1x2x6\_centralAPA} configuration. (left) Relative importance of the classifier inputs. (right) Held-out classifier score of the clusters with a reconstructed energy above \SI{3}{\mega\electronvolt} for the \gls{cc} neutrino, external gamma, external neutron and intrinsic radiological samples. A stricter threshold applies above \SI{12}{\mega\electronvolt}.\label{fig:SB_CLASSIFIER}}
+\end{figure}
+
+\paragraph{Neutron-capture rule.} A neutron captured on $^{40}$Ar releases \SI{6.1}{\mega\electronvolt} in a cascade of gammas that convert apart from each other, so the capture is reconstructed as a primary cluster with part of the energy and several adjacent clusters, a topology close to that of a \gls{cc} electron followed by de-excitation gammas. Below the classifier gate the offset would be given to these clusters as well, moving them into the \qtyrange{6}{14}{\mega\electronvolt} range, inside the day-night and sensitivity windows. A second random forest is therefore trained on the \gls{cc} neutrino clusters against the neutron-capture clusters of the external-neutron sample, restricted to clusters with an offset-inclusive \emph{SolarEnergy} between \qtyrange{6}{14}{\mega\electronvolt}, using the hit count, the primary-cluster, total and adjacent-cluster energies, the numbers of adjacent clusters and the photoelectrons and optical hits of the matched flash. The \gls{cc} clusters are weighted by the oscillated solar flux and the neutron clusters by their rate, with equal totals, and the same two-half scheme is used. Clusters in that range scoring below the threshold that keeps \SI{50}{\percent} of the \gls{cc} clusters there are treated as background-like and removed. This removes \qtyrange{89}{94}{\percent} of the neutron-capture clusters in the range, and half of the \gls{cc} clusters there. The rule is the same in all four configurations and does not affect the \emph{hep} search, since every cluster it acts on lies below \SI{15}{\mega\electronvolt}.
+
+\paragraph{De-excitation offset classifier.} The second step, applied only to the signal-like clusters, frames the adjacent-cluster energy assignment as a binary classification problem. The \gls{cc} $\nu_e$-Ar interaction produces two dominant classes of de-excitation, Gamow-Teller and Fermi transitions, which correspond to energy offsets of \SI{4.47}{\mega\electronvolt} and \SI{6.41}{\mega\electronvolt} between the neutrino and the calibrated primary electron. These offsets are not the nuclear transition energies (the Fermi line lies at \SI{4.38}{\mega\electronvolt}): each is the weighted average, over the events of its class, of the energy that must be added to the reconstructed electron to recover the neutrino energy, so it also contains the reaction threshold and absorbs the reconstruction biases of the electron and of the gamma clusters. The algorithm uses a random forest classifier trained on the main cluster properties and the aggregate adjacent cluster features to predict which of the two hypotheses better describes each event, and the predicted offset is added to the main electron energy. This simplifies the problem to a binary choice, motivated by the two main calibration lines of the \gls{cc} interaction displayed in~\cref{fig:MARLEY_CC_INTERACTION}. The classifier provides an AUC of \num{0.77} on the held-out test sample, which means that the algorithm can distinguish between the two hypotheses with a good efficiency. The classifier is trained on the following features:
 
 \begin{itemize}
     \item NHits: number of hits in the main electron cluster.
@@ -53,14 +66,14 @@ Hereby, the problem is simplified to a binary choice. This is motivated by the t
     \item SelectedEnergy: reconstructed \textbf{SelectedEnergy}.
 \end{itemize}
 
-From which the highlighted features are the most important for the random forest regressor, as shown in \cref{fig:RF_FEATURE_IMPORTANCE}.
+From which the highlighted features, the total and maximum adjacent cluster energies, are the most important for the classifier, as shown in \cref{fig:RF_FEATURE_IMPORTANCE}, reflecting their direct sensitivity to the integrated gamma cascade energy.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=.49\linewidth]{Images/Reco/random_forest_importance_hd_1x2x6_centralapa_marley_official_feature_importance_config_scan.png}
-    \includegraphics[width=.49\linewidth]{Images/Reco/cluster_discriminant_hd_1x2x6_centralapa_marley_official_label_hist1d.png}
-    \caption[width=1\linewidth]{(left) Feature importance of the random forest regressor. (right) Discriminant calibration for the random forest regressor.\label{fig:RF_FEATURE_IMPORTANCE}}
+    \includegraphics[width=.55\linewidth]{Images/Reco/random_forest_importance_hd_1x2x6_centralapa_marley_final_feature_importance_config_scan.png}
+    \includegraphics[width=.43\linewidth]{Images/Reco/cluster_discriminant_hd_1x2x6_centralapa_marley_final_label_subtract_hist1d.png}
+    \caption[width=1\linewidth]{(left) Feature importance of the de-excitation offset classifier of \textbf{SolarEnergy}. (right) Discriminant score distribution for the \SI{4.47}{\mega\electronvolt} (Gamow-Teller) and \SI{6.41}{\mega\electronvolt} (Fermi) energy hypotheses.\label{fig:RF_FEATURE_IMPORTANCE}}
 \end{figure}
 
-Finally, as a benchmark, we introduce the \textbf{ClusterEnergy} algorithm as the reconstruction method based purely on the main electron cluster. The only computation is the calibration step explained in the next section wich applied to the full sample.
+Finally, as a benchmark, we introduce the \textbf{ClusterEnergy} algorithm as the reconstruction method based purely on the main electron cluster. The only computation is the calibration step explained in the next section, which is applied to the full sample.
 

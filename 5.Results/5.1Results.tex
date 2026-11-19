@@ -1,19 +1,20 @@
 \subsection{Neutrino Vertex Smearing}
-As explained in \cref{sec:RECONSTRUCTION}, the drift-coordinate of the reconstructed vertex is obtained from the flash-matching algorithm, which combines the information from the \gls{tpc} cluster and the associated \gls{pds} flash. 
+As explained in \cref{sec:RECONSTRUCTION}, the drift-coordinate of the reconstructed vertex is obtained from the flash-matching algorithm, which combines the information from the \gls{tpc} cluster and the associated \gls{pds} flash. The transverse coordinates come from the charge-weighted cluster centroid. 
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_vertex_smearing_coordinate_hist2d.png}
-    \caption[width=1\linewidth]{Vertex smearing from calibrated signal.\label{fig:SIGNAL_VERTEX_SMEARING}}
+    \includegraphics[width=.6\linewidth]{Images/Reco/vertex_smearing_hd_1x2x6_centralapa_marley_final_coordinate_subtract_logy_hist1d.png}
+    \caption[width=1\linewidth]{Coordinate error distributions of the calibrated signal for \qtyrange{4}{30}{\mega\electronvolt} neutrinos in the \textit{hd\_1x2x6\_centralAPA} configuration.\label{fig:SIGNAL_VERTEX_SMEARING}}
 \end{figure}
 
-The results are shown in~\cref{fig:SIGNAL_VERTEX_SMEARING} for the \textit{vd\_1x8x14\_3view\_30deg} geometry with nominal background production. These distributions are not Gaussian, as expected from the nature of the matching algorithms. The resulting matching can be correct, leading to a small error, or completely wrong, leading to a large error in the reconstructed coordinate.
+The vertex error distributions are shown in~\cref{fig:SIGNAL_VERTEX_SMEARING} for the \textit{hd\_1x2x6\_centralAPA} geometry with background. These distributions are not Gaussian, as expected from the nature of the matching algorithms. The resulting matching can be correct, leading to a narrow core and a small error, or completely wrong, leading to a large error in the reconstructed coordinate that populates the tails.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/hd_1x2x6_centralapa_marley_official_variable_energy_scan.png}
-    \caption[width=1\linewidth]{\gls{hd} cumulative vertex error distribution. Showing $x$ (left), $y$ (center) and $z$ (right) coordinates from left to right.
+    \includegraphics[width=.49\linewidth]{Images/Reco/cumulative_vertex_error_hd_1x2x6_centralapa_marley_final_values_sample_variable_energy_nan_logx_scan.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/cumulative_vertex_error_vd_1x8x14_3view_30deg_nominal_marley_final_values_sample_variable_energy_nan_logx_scan.png}
+    \caption[width=1\linewidth]{\gls{hd} (left) and \gls{vd} (right) cumulative distributions of the errors in the reconstructed vertex position from calibrated signal clusters of \qtyrange{4}{30}{\mega\electronvolt} neutrinos, for the $x$, $y$ and $z$ coordinates.
     \label{fig:CUMMULATIVE_VERTEX_ERROR}}
 \end{figure}
 
-To have a better understanding of the reconstruction performance, we can compute the cumulative vertex error~\cref{fig:CUMMULATIVE_VERTEX_ERROR}. This plot shows the percentage of events that are reconstructed within a certain vertex error tolerance. For instance, we can see that approximately \num{90}\% of the events have a vertex error below \SI{1}{\centi\meter} in the y- and z-coordinates, while only about \num{60}\% of the events achieve this level of accuracy in the x-coordinate.
+To have a better understanding of the reconstruction performance, we can compute the cumulative vertex error~\cref{fig:CUMMULATIVE_VERTEX_ERROR}. This plot shows the fraction of events that are reconstructed within a certain vertex error tolerance. For both detectors the distributions change in trend above \SI{3}{\centi\meter}: instead of the fall-off of the core distribution continuing, a broader and shallower component takes over and dominates the tail. This coincides with the average track size of the electrons in the energy range considered. Using this trend change as a reference point, approximately \num{90}\% (\num{88}\%) of the \gls{hd} (\gls{vd}) events have a vertex error below \SI{3}{\centi\meter} in the y- and z-coordinates, while only about \num{71}\% (\num{54}\%) of the events achieve this level of accuracy in the x-coordinate. The fact that the trend change appears for all coordinates and both detectors suggests a common underlying cause rather than a geometry-specific resolution artifact.

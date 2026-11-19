@@ -1,10 +1,15 @@
 \subsection{Neutrino Energy Calibration\label{sec:SIGNAL_SMEARING}}
-Due to the missing nuclear binding energy and undetected soft particles, the reconstructed neutrino energy is expected to systematically underestimate the true value. As a final step to the reconstruction process, all energies (\textbf{TotalEnergy}, \textbf{SelectedEnergy}, \textbf{SolarEnergy} and \textbf{ClusterEnergy}) are calibrated with a linear fit to compensate for systematic losses in the previous clustering or calibration processes. This final global correction is applied to bring the distribution into agreement with the simulation truth following a process equivalent to the one described in \cref{sec:ELECTRON_CALIBRATION} for the main electron cluster. The resulting neutrino energy smearing is shown in \cref{fig:NEUTRINO_ENERGY_SMEARING}.
+Due to the missing nuclear binding energy and undetected soft particles, the reconstructed neutrino energy is expected to systematically underestimate the true value. As a final step to the reconstruction process, all energies (\textbf{TotalEnergy}, \textbf{SelectedEnergy}, \textbf{SolarEnergy} and \textbf{ClusterEnergy}) are calibrated with a linear fit to compensate for systematic losses in the previous clustering or calibration processes. This final global correction is applied to bring the distribution into agreement with the simulation truth following a process equivalent to the one described in \cref{sec:ELECTRON_CALIBRATION} for the main electron cluster. The calibrated neutrino energy takes the form
+\begin{equation}
+    E^\text{reco}_{\nu} = a \cdot \left(E_{e}^{\text{reco}} + \sum_i E_{\text{adj, i}}^{\text{reco}}\right) + b\,,\label{eq:NEUTRINO_CALIBRATION_FINAL}
+\end{equation}
+where $a$ and $b$ are the calibration parameters of each algorithm and configuration and the sum runs over the adjacent clusters entering each algorithm (for \emph{SolarEnergy} the sum is replaced by the de-excitation offset, and for \emph{ClusterEnergy} it is absent). The resulting neutrino energy smearing is shown in \cref{fig:NEUTRINO_ENERGY_SMEARING}.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\linewidth]{Images/Reco/neutrino_energy_hd_1x2x6_centralapa_marley_official_trueenergy_recoenergy_calibrated_variable_selectedenergy_logz_hist2d.png}
-    \caption[width=1\linewidth]{\gls{hd} Neutrino energy smearing from the calibrated \emph{SelectedEnergy} signal.\label{fig:NEUTRINO_ENERGY_SMEARING}}
+    \includegraphics[width=.49\linewidth]{Images/Reco/neutrino_energy_hd_1x2x6_centralapa_marley_final_trueenergygrid_recoenergygrid_frequencycolumnnorm_calibrated_true_variable_selectedenergy_hist2d.png}
+    \includegraphics[width=.49\linewidth]{Images/Reco/neutrino_energy_vd_1x8x14_3view_30deg_nominal_marley_final_trueenergygrid_recoenergygrid_frequencycolumnnorm_hist2d.png}
+    \caption[width=1\linewidth]{\gls{hd} (left) and \gls{vd} (right) neutrino energy smearing from the calibrated \emph{SelectedEnergy} signal. Each true-energy column is normalised to unity, with a \SI{0.5}{\mega\electronvolt} binning.\label{fig:NEUTRINO_ENERGY_SMEARING}}
 \end{figure}
 
 The distribution is centered around the diagonal, indicating that the reconstructed energy is in good agreement with the true energy. The off-diagonal bands correspond to events where the reconstructed energy is significantly different from the true energy, which can be attributed to various factors such as undetected particles, misreconstruction, or fluctuations in the energy deposition. The overall shape of the distribution provides insight into the resolution and bias of the neutrino energy reconstruction, which is crucial for accurate physics analyses.

@@ -1,7 +1,7 @@
 \subsection{Flash-Matching}\label{sec:FLASH_MATCHING}
-The final step in the event reconstruction process is the attempt to match the reconstructed primary \gls{tpc} cluster with a corresponding \gls{pds} flash. Note that this step is not strictly required for the energy reconstruction, as the drift attenuation correction can be applied statistically. However, the matching is essential for the correct reconstruction of the signal's 3D position and, most importantly, background fiducialisation. This is particularly important for low-energy solar neutrino analyses, where the signal rate is low and the high energy tails of the background spectra leak into the signal region. The matching is also important for supernova neutrino analyses, where the time structure of the neutrino burst provides information about the supernova dynamics. 
+The final step in the event reconstruction process is the attempt to match the reconstructed primary \gls{tpc} cluster (charge information) with its corresponding \gls{pds}-collected light counterpart (flash), in order to compute the true drift time ($t_\text{drift}$) and its corresponding drift coordinate. Note that this step is not strictly required for the energy reconstruction, as the drift coordinate and its corresponding attenuation correction can be applied statistically to obtain a good average result. However, the matching is essential for the correct reconstruction of the signal's 3D position and, most importantly, background fiducialisation. This is particularly important for low-energy solar neutrino analyses, where the neutrino interaction rate is low and the high energy tails of the background spectra leak into the signal region. The matching is also important for supernova neutrino analyses, where the time structure of the neutrino burst provides information about the supernova dynamics. 
 
-The matching efficiency grows moderately with particle energy and strongly with proximity to the \gls{pds} plane. In the case of the \gls{vd} geometry, the efficiency also depends on the \gls{pds} plane being matched to, as the different planes have different \gls{pds} coverage (see \cref{fig:FLASH_MATCHING_PLANE}). The cathode plane has the highest efficiency, while the membrane planes closest to the anode have the lower efficiency. This is due to the fact that the light produced near the cathode plane has a higher chance of being detected by the \gls{pds} system, as it is closer to the \gls{lar} active volume.
+The matching efficiency grows moderately with particle energy and strongly with proximity to the \gls{pds} plane. In the case of the \gls{vd} geometry, the efficiency also depends on the \gls{pds} plane being matched to, as the different planes have different \gls{pds} coverage (see \cref{fig:FLASH_FINDING_PLANE}). The cathode plane has the highest efficiency, while the membrane planes closest to the anode have the lower efficiency. This is due to the fact that the light produced near the cathode plane has a higher chance of being detected by the \gls{pds} system, as it is closer to the \gls{lar} active volume.
 
 \begin{table}[ht]
     \centering
@@ -9,32 +9,32 @@ The matching efficiency grows moderately with particle energy and strongly with 
     \caption{Flash-matching parameters for \gls{hd} and \gls{vd} geometries.\label{tab:FLASH_MATCHING_PARAMETERS}}
 \end{table}
 
-From this matching one can reconstruct the drift coordinate of the \gls{tpc} cluster, which is essential for the correct reconstruction of the neutrino energy. The drift coordinate is computed from the time between the \gls{tpc} vertex and the PDS flash by taking into account the drift velocity of the electrons in the \gls{lar}. \Cref{tab:FLASH_MATCHING_PARAMETERS} shows the clustering and matching parameters for each geometry used for this previous results. Note that the clustering parameters will be held the same for the different background configurations, while the matching parameters can be optimized for each configuration to maximize the matching efficiency.
+From this matching one can reconstruct the drift coordinate of the \gls{tpc} cluster, which is essential for the correct reconstruction of the neutrino energy. The drift coordinate is computed from the time difference between the \gls{tpc} cluster and the matched \gls{pds} flash, multiplied by the known electron drift velocity in the \gls{lar}. \Cref{tab:FLASH_MATCHING_PARAMETERS} shows the matching parameters for each geometry (the flash-finding parameters are given in~\cref{tab:FLASH_FINDING_PARAMETERS}). The flash-finding parameters are held the same for the different background configurations, while the matching parameters can be optimised for each configuration to maximise the matching efficiency.
 
 For any given \gls{tpc} cluster, the matching strategy follows these steps:
 
 \begin{enumerate}
-    \item\textbf{Distance Calculation}: Compute the distance between the \gls{tpc} cluster vertex and all PDS flash positions.
-    
-    \item\textbf{Time Difference Calculation}: Calculate the time difference between the \gls{tpc} cluster and the PDS flash. This must be smaller than the drift time of the electrons in the \gls{lar}.
-    
-    \item\textbf{Candidate Selection Criteria}: A \gls{pds} flash is considered adjacent to a \gls{tpc} flash if its projected distance follows:
-    
+    \item\textbf{Time Difference Calculation}: Calculate the time difference between the \gls{tpc} cluster and the \gls{pds} flash. This must be smaller than the maximum drift time of the electrons in the \gls{lar} drift volume and is explicitly required to be non-negative.
+
+    \item\textbf{Distance Calculation}: Compute the 2D distance, in the $y$-$z$ plane, between the \gls{tpc} cluster vertex and the projections of all \gls{pds} flash positions onto the \gls{pds} plane. In \gls{vd}, flashes on the membrane walls are also used: the cluster vertex is projected onto the membrane plane, and the distance along the drift direction, computed from the time difference, replaces the projected coordinate perpendicular to it.
+
+    \item\textbf{Candidate Selection Criteria}: A \gls{pds} flash is considered a matching candidate of a \gls{tpc} cluster if the combined projected distances over the selection radii are smaller than 1:
+
     \begin{equation}
-        \left(\dfrac{\text{TPC}_\text{y} - \text{PDS}_\text{y}}{\text{AdjOpFlashY}}\right)^2 + \left(\dfrac{\text{TPC}_\text{Z} - \text{PDS}_\text{Z}}{\text{AdjOpFlashZ}}\right)^2 < 1\,.
+        \left(\dfrac{\text{TPC}_\text{y} - \text{PDS}_\text{y}}{\text{AdjOpFlashY}}\right)^2 + \left(\dfrac{\text{TPC}_\text{z} - \text{PDS}_\text{z}}{\text{AdjOpFlashZ}}\right)^2 < 1\,.
     \end{equation}
 
-    Here \( \text{AdjOpFlashY} \) and \( \text{AdjOpFlashZ} \) are the adjusted matching distances in the 2 projected coordinates, respectively. Similarly, in the case of the \gls{vd} geometry matching against membrane flashes, and additional \( \text{AdjOpFlashX} \) parameter is used where the $(\text{TPC}_\text{X} - \text{PDS}_\text{X})^2 / \text{AdjOpFlashX}^2$ term is computed from the time difference between the \gls{tpc} cluster and the \gls{pds} flash.
-    
-    \item\textbf{Matching Criteria}: The algorithm consider 3 additional cuts to prevent the random matching of background cluster:
+    Here \( \text{AdjOpFlashY} \) and \( \text{AdjOpFlashZ} \) are the optimised matching distances (semi-axes of the matching ellipse) in the 2 projected coordinates, respectively. They are set from the distance distributions of signal and background flashes: in the separate $|\Delta y|$ and $|\Delta z|$ projections background flashes already dominate beyond about \SI{50}{\centi\meter}, but in the radial distance signal flashes dominate up to \SI{100}{\centi\meter} from the vertex and background flashes beyond it. Similarly, in the case of the \gls{vd} geometry matching against membrane flashes, an additional \( \text{AdjOpFlashX} \) parameter is used where the $(\text{TPC}_\text{X} - \text{PDS}_\text{X})^2 / \text{AdjOpFlashX}^2$ term is computed from the time difference between the \gls{tpc} cluster and the \gls{pds} flash.
+
+    \item\textbf{Matching Criteria}: The algorithm considers 3 additional cuts to prevent the random matching of background clusters:
     \begin{itemize}
-        \item The minimum number of hits in a \gls{pds} flash: \texttt{AdjOpFlashMinNHitCut} (by default 3).
-        \item The maximum ratio of \texttt{AdjOpFlashMaxPE} / \texttt{AdjOpFlashPE}: \texttt{AdjOpFlashMaxPERatioCut} (by default 1). This is intended to prevent the matching of background PDS flashes, which are less homogeneous in the number of \gls{pe}s compared to the signal PDS flashes.
-        \item The minimum \& maximum number of \gls{pe}s \texttt{AdjOpFlashMinPECut} \& \texttt{AdjOpFlashMaxPECut}. This cut is tuned to match the expected light-map of a neutrino production.
+        \item The minimum number of hits in a \gls{pds} flash: \texttt{AdjOpFlashMinNHitCut} (3 in \gls{hd}, 6 in \gls{vd}). Intended to avoid matches to single-ophit flashes (more likely to originate from background) or accidental coincidences of \texttt{ophits}.
+        \item The maximum ratio of \texttt{AdjOpFlashMaxPE} / \texttt{AdjOpFlashPE}: \texttt{AdjOpFlashMaxPERatioCut} (set to 1 here, therefore not applied). This is intended to prevent the matching of background \gls{pds} flashes, which are less homogeneous in the number of \gls{pe}s compared to the signal \gls{pds} flashes.
+        \item The minimum \& maximum number of \gls{pe}s \texttt{AdjOpFlashMinPECut} \& \texttt{AdjOpFlashMaxPECut}, here taken as a function of the cluster charge and the candidate drift time from the neutrino light-map (see below). These have been parametrised with simulation data of a pure neutrino signal to ensure a \SI{99}{\percent} acceptance and improve background rejection.
     \end{itemize}
 \end{enumerate}
 
-This algorithm reduces the initial selection of PDS flashes to a set of matching candidates. From this set, only one flash is selected as the match for the \gls{tpc} cluster. To do so, a light-map based parametrization has been implemented by evaluating the expected number of \gls{pe}s in the flash as a function of the distance to cluster's charge and predicted drift distance. Hence, the algorithm picks out the flash candidate that minimizes the following quantity:
+This algorithm reduces the initial selection of \gls{pds} flashes to a set of matching candidates. From this set, only one flash is selected as the match for the \gls{tpc} cluster. To do so, a light-map based parametrisation has been implemented by evaluating the median number of \gls{pe}s in the flash as a function of the cluster's charge and predicted drift time (the difference between the cluster time and the flash time). Hence, the algorithm picks out the flash candidate that minimizes the following quantity:
 
 \begin{equation}
     \chi = \frac{\text{abs}(\text{PE}_\text{flash} - \text{PE}_\text{expected})}{\text{PE}_\text{flash}^\alpha}\,,
@@ -42,7 +42,7 @@ This algorithm reduces the initial selection of PDS flashes to a set of matching
 
 where \( \text{PE}_\text{flash} \) is the number of \gls{pe}s in the flash, \( \text{PE}_\text{expected} \) is the expected number of \gls{pe}s from the light-map parametrization, and \( \alpha \) is a tunable parameter (by default set to 2) that controls the weight of the flash \gls{pe} count in the matching.
 
-This parametrization is helpful to investigate which matching strategy works best:
+This parametrisation is helpful to investigate which matching strategy works best:
 
 \begin{itemize}
     \item \textbf{Minimum Error Matching} ($\alpha = 0$): select the flash candidate that minimizes the absolute difference between the number of \gls{pe}s in the flash and the expected number of \gls{pe}s from the light-map.
@@ -51,6 +51,10 @@ This parametrization is helpful to investigate which matching strategy works bes
     \item \textbf{Maximum \gls{pe} Matching} ($\alpha \to \infty$): select the flash candidate with the highest number of \gls{pe}s.
 \end{itemize}
 
+The Weighted Relative Error strategy ($\alpha = 2$) yields the highest matching efficiency, closely followed by the Maximum \gls{pe} strategy, for both geometries, and is therefore adopted as the default matching criterion.
+
+\paragraph{Exception handling.} If no adjacent \gls{pds} flash is found within the matching criteria, the \gls{tpc} cluster is considered unmatched, and its drift coordinate is set to half of the maximum drift distance (the charge being corrected accordingly). This assignment is a choice made for the performance studies presented here, so that the resolution loss of unmatched clusters is included in the reported metrics, rather than a general feature of the reconstruction: in a physics analysis, unmatched clusters can instead be rejected, as is done in the solar neutrino analysis, avoiding any impact on the estimated rate of random coincidences.
+
 In the following we detail the implementation of the light-map assisted matching method. This algorithm takes into account the expected light yield distribution for a given signal \gls{tpc} cluster:
 
 \begin{equation}
@@ -58,7 +62,7 @@ In the following we detail the implementation of the light-map assisted matching
     \label{eq:LIGHTMAP_FORMULA}
 \end{equation}
 
-Where \( A \), \( \lambda \) and \( C \) are amplitude, attenuation, and correction fit parameters; \( t \) is the drift time and \( t_{max} \) is the maximum drift time in the detector. This formula can be used to extract different attenuation curves for different cluster charge ranges. \Cref{fig:FLASH_MATCHING_LIGHTMAP} shows the expected number of \gls{pe}s in the flash as a function of the drift time for different cluster charge ranges for the \gls{hd} and \gls{vd} geometries. The extracted attenuation curve parameters can be fitted to simple quadratic functions in the logarithmic space to parametrize the light-map assisted \gls{pe} cut as a function of both drift time and cluster charge.
+Where \( A \), \( \lambda \) and \( C \) are amplitude, attenuation, and correction fit parameters; \( t \) is the drift time and \( t_{max} \) is the maximum drift time in the detector. The attenuation $\lambda$ is dimensionless; a negative value, as fitted in \gls{vd}, means that the expected light rises with the drift time, because the cathode photon detectors see the interactions far from the anode. This formula can be used to extract different attenuation curves for different cluster charge ranges. \Cref{fig:FLASH_MATCHING_LIGHTMAP} shows the expected number of \gls{pe}s in the flash as a function of the drift time for different cluster charge ranges for the \gls{hd} and \gls{vd} geometries.
 
 \begin{figure}[ht!]
     \centering
@@ -70,7 +74,7 @@ Where \( A \), \( \lambda \) and \( C \) are amplitude, attenuation, and correct
 The extracted attenuation curve parameters can be fitted to simple quadratic functions in the logarithmic space to parametrize the light-map assisted \gls{pe} cut as a function of both drift time and cluster charge \( Q \):
 
 \begin{align}
-    \text{PE}_\text{cut}(t, Q) &= \exp \left[ A(Q) - A(Q) \cdot \lambda(Q) \cdot \frac{t}{t_{max}} + C(Q) \cdot \left(\frac{t}{t_{max}}\right)^2\right]\,,\\
+    \text{PE}_\text{cut}(t, Q) &= 10^{\,A(Q) - A(Q) \cdot \lambda(Q) \cdot \frac{t}{t_{max}} + C(Q) \cdot \left(\frac{t}{t_{max}}\right)^2}\,,\\
     \text{with } \alpha(Q) &= a_0 + a_1 \cdot Q + a_2 \cdot Q^2 \quad \text{where } \alpha \in \{A, \lambda, C\}\,. \nonumber
     \label{eq:LIGHTMAP_PARAMETRIZATION}
 \end{align}
@@ -84,22 +88,33 @@ Where \( A(Q) \), \( \lambda(Q) \) and \( C(Q) \) are amplitude, attenuation, an
     \caption{Light-map assisted flash-matching parametrization for the \gls{hd} and \gls{vd} geometries. The extracted attenuation curve parameters are shown as a function of the cluster charge.\label{fig:FLASH_MATCHING_LIGHTMAP_PARAMETERS}}
 \end{figure}
 
-In terms of flash-matching efficiency, we can see in~\cref{tab:MATCHING_COMPARISON} that the \gls{hd} geometry has a better overall performance than the \gls{vd} geometry, which is expected due to the larger drift volume of the latter. The vd\_1x8x14\_3view\_30deg\_nominal configuration has the lower matching efficiency due to the larger drift volume and higher background rate, which increases the probability of miss-matching.
+The matching outcome of each primary \gls{tpc} cluster is classified into four cases, which the matching performance is summarised with in~\cref{tab:MATCHING_COMPARISON}:
+
+\begin{itemize}
+    \item\textbf{No Match}. \gls{tpc} clusters for which no \gls{pds} flash passed the previously described matching process.
+    \item\textbf{Background}. \gls{tpc} clusters matched to \gls{pds} flashes without any traceable signal activity contributing to their \gls{xa} signal.
+    \item\textbf{Low-Purity}. \gls{tpc} clusters matched to \gls{pds} flashes with a traceable signal contribution that only accounts for up to \SI{50}{\percent} of the \gls{xa} signal.
+    \item\textbf{High-Purity}. \gls{tpc} clusters matched to \gls{pds} flashes with a traceable signal contribution that accounts for more than \SI{50}{\percent} of the flashes' \gls{xa} signals. These matches are dominated by true signal light and provide the intrinsic resolution that can be achieved from this reconstruction process.
+\end{itemize}
+
+The reconstructed drift coordinate is unbiased for high-purity matches, while low-purity matches are biased due to the presence of background light in the flash. For background matches, the difference in time between the true interaction time and the matched flash follows a flat distribution, as there exists no time correlation with the signal; the reconstructed drift coordinate is then uniformly distributed along the full drift range, producing a bias in the reconstructed position and charge correction. For unmatched clusters, as there is no handle on the true interaction time, the drift coordinate is set to half of the maximum drift distance.
 
 % Add tableNeutrino_Matching_Efficiency_X
 \begin{table}[ht!]
     \centering
     \input{Tables/Neutrino_Matching_Efficiency_X.tex}
-    \caption[width=1\linewidth]{TPC-PDS matching comparison between geometries. Fraction of sample matched to flash.\label{tab:MATCHING_COMPARISON}}
+    \caption[width=1\linewidth]{TPC-PDS matching comparison between geometries for the \qtyrange{4}{30}{\mega\electronvolt} neutrino sample, showing the sample fraction for each type of flash-matching case. $^\dagger$Signal-only samples without background (earlier production), shown for reference.\label{tab:MATCHING_COMPARISON}}
 \end{table}
 
-The matching efficiency is defined as the fraction of \gls{tpc} clusters that have been matched to a signal \gls{pds} flash. \Cref{fig:FLASH_MATCHING} show the flash-matching efficiency for the \gls{hd} and \gls{vd} signal productions as function of the different parameters. Note that these have been used as a figure of merit to optimize the matching parameters described above. The goal is to maximize the matching efficiency (\num{>90}\%) while minimizing the reach of the clustering parameters to avoid random background matches.
+In terms of flash-matching efficiency, we can see in~\cref{tab:MATCHING_COMPARISON} that the \gls{hd} geometry has a better overall performance than the \gls{vd} geometry, which is expected due to the larger drift volume of the latter. Although the underlying background rate is comparable between the two geometries, the longer drift time of \gls{vd} means that more background activity accumulates within the matching time window for any given cluster, which increases the probability of mismatching to the \gls{pds} flashes. This results in a lower overall matching efficiency, with a high-purity fraction of \SIrange{65}{67}{\percent} in \gls{hd} (Central and Lateral) against \SI{5}{\percent} and \SI{11}{\percent} in \gls{vd} (Nominal and Shielded, respectively). About a third of the \gls{hd} signal events are matched to a flash produced entirely by background activity, rising to \SI{42}{\percent} in \gls{vd} Shielded and more than half in \gls{vd} Nominal; for these events the drift coordinate is misassigned, which is the weak point of the reconstruction chain for fiducialisation.
+
+The matching efficiency is evaluated as the fraction of signal \gls{tpc} events matched to a \gls{pds} flash with signal purity bigger than zero (i.e. Low- plus High-Purity). \Cref{fig:FLASH_MATCHING} shows the flash-matching efficiency for the \gls{hd} and \gls{vd} productions as a function of the drift coordinate (distance to the \gls{pds} plane) for \SI{10}{\mega\electronvolt} neutrinos, evaluated on two separate samples: a \emph{Signal} sample containing only the neutrino interaction activity, and a \emph{Signal~$+$~Background} sample in which the same signal is overlaid with the full radiological background model. Note that these have been used as a figure of merit to optimise the matching parameters described above. The goal is to maximise the matching efficiency (\num{>90}\%) while minimising the reach of the matching parameters to avoid random background matches. For \gls{hd}, whose workspace geometry instruments only a single \gls{apa} with no neighbouring \gls{apa} modelled beyond either \gls{cpa}, the full \gls{apa}-\gls{cpa}-\gls{apa} range in the right panel combines half of the \emph{CentralAPA} and the \emph{LateralAPA} (mirrored about its drift coordinate) samples, the latter also including the side-entering external background on the \gls{apa}. The \gls{vd}'s single drift cell is already fully spanned by one workspace sample.
 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=.49\linewidth]{Images/LowE/tpc_cluster_efficiency_drift_scan_hd_1x2x6_vd_1x8x14_3view_30deg_marley_official_coordinate_efficiency_x_energy_10_comparison.png}
-    \includegraphics[width=.49\linewidth]{Images/Reco/tpc_cluster_efficiency_drift_scan_marley_official_coordinate_efficiency_x_energy_10_comparison.png}
-    \caption{Flash-matching efficiency for the \gls{hd} and \gls{vd} signal productions as function of the drift coordinate. (Left) Matching efficiency for signal productions. (Right) Matching efficiency for signal and background productions.\label{fig:FLASH_MATCHING}}
+    \includegraphics[width=.49\linewidth]{Images/Reco/tpc_cluster_efficiency_drift_scan_hd_1x2x6_centralapa_hd_1x2x6_lateralapa_vd_1x8x14_3view_30deg_nominal_marley_final_x_energy_10_comparison.png}
+    \caption{Flash-matching efficiencies as a function of distance to the \gls{pds} plane for \num{10}-\unit{\mega\electronvolt} neutrinos. (Left) Signal and (Right) Signal $+$ Background samples.\label{fig:FLASH_MATCHING}}
 \end{figure}
 
 One can see that the matching efficiency decreases with increasing drift distance, which is expected due to the attenuation of the light in the \gls{lar}. The \gls{hd} geometry has a higher matching efficiency than the \gls{vd} geometry, especially at larger drift distances. This is expected due to the larger drift volume of the \gls{vd} geometry, which leads to a higher probability of miss-matching.
